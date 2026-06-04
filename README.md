@@ -37,6 +37,7 @@
 |---|---|---|
 | 🚀 **Main Prototype** | [tactical-dimension.netlify.app](https://tactical-dimension.netlify.app/) | Full boot experience + all 10 screens |
 | 🤖 **Google AI Build** | [tactical-dimension-googleai.netlify.app](https://tactical-dimension-googleai.netlify.app/) | Built via Google AI Studio integration |
+| 📹 **Submission Loom** | [LoomVideo](https://drive.google.com/file/d/1nKpAyBHEPrTITfh5zx0K5gcTstXXS-rS/view?usp=sharing) | Challenge submission Loom video |
 
 </div>
 
