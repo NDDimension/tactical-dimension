@@ -1,0 +1,377 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TACTICAL DIMENSION | SYSTEM_SETTINGS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "background": "#131313",
+                    "surface-container-low": "#1b1b1b",
+                    "outline": "#a48c7a",
+                    "on-surface": "#e2e2e2",
+                    "secondary-fixed": "#cfe5ff",
+                    "secondary-container": "#00a1fe",
+                    "on-secondary-fixed": "#001d34",
+                    "primary-fixed-dim": "#ffb77d",
+                    "on-background": "#e2e2e2",
+                    "surface-dim": "#131313",
+                    "on-error": "#690005",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-high": "#2a2a2a",
+                    "tertiary-fixed": "#e5e2e1",
+                    "surface-container-highest": "#353535",
+                    "tertiary": "#c8c6c5",
+                    "on-tertiary-fixed-variant": "#474746",
+                    "on-secondary": "#003355",
+                    "on-secondary-fixed-variant": "#004a78",
+                    "tertiary-fixed-dim": "#c8c6c5",
+                    "on-primary": "#4d2600",
+                    "on-secondary-container": "#003559",
+                    "on-tertiary-fixed": "#1c1b1b",
+                    "on-surface-variant": "#ddc1ae",
+                    "on-primary-container": "#623200",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-primary-fixed": "#2f1500",
+                    "inverse-surface": "#e2e2e2",
+                    "outline-variant": "#564334",
+                    "on-primary-fixed-variant": "#6e3900",
+                    "secondary-fixed-dim": "#99cbff",
+                    "error-container": "#93000a",
+                    "on-tertiary-container": "#3f3e3e",
+                    "primary-container": "#ff8c00",
+                    "inverse-on-surface": "#303030",
+                    "secondary": "#99cbff",
+                    "tertiary-container": "#aba9a9",
+                    "primary-fixed": "#ffdcc3",
+                    "surface-variant": "#353535",
+                    "on-tertiary": "#313030",
+                    "inverse-primary": "#904d00",
+                    "surface": "#131313",
+                    "surface-container": "#1f1f1f",
+                    "surface-bright": "#393939",
+                    "primary": "#ffb77d",
+                    "surface-tint": "#ffb77d",
+                    "error": "#ffb4ab"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "gutter": "16px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "48px",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "label-caps": ["JetBrains Mono"],
+                    "body-lg": ["JetBrains Mono"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "data-mono": ["JetBrains Mono"],
+                    "body-sm": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "label-caps": ["11px", {"lineHeight": "1.0", "letterSpacing": "0.15em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "800"}],
+                    "headline-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.05em", "fontWeight": "900"}],
+                    "headline-lg-mobile": ["32px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "900"}],
+                    "data-mono": ["14px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-sm": ["13px", {"lineHeight": "1.5", "letterSpacing": "0.02em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { background-color: #000000; color: #e2e2e2; }
+        .scanline-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 4px, 3px 100%; pointer-events: none; z-index: 100;
+        }
+        .hud-bracket { position: relative; }
+        .hud-bracket::before, .hud-bracket::after {
+            content: ''; position: absolute; width: 8px; height: 8px; border-color: #ffb77d; border-style: solid;
+        }
+        .hud-bracket::before { top: -2px; left: -2px; border-width: 2px 0 0 2px; }
+        .hud-bracket::after { bottom: -2px; right: -2px; border-width: 0 2px 2px 0; }
+        .glow-amber { box-shadow: 0 0 10px rgba(255, 183, 125, 0.3); }
+        .glow-cobalt { box-shadow: 0 0 10px rgba(0, 161, 254, 0.3); }
+        .watermark-bg {
+            position: fixed; font-size: 40vh; font-weight: 900; color: rgba(255, 255, 255, 0.02);
+            z-index: -1; user-select: none; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            filter: blur(8px); font-family: 'Inter', sans-serif;
+        }
+        input[type=range] { -webkit-appearance: none; background: #1f1f1f; height: 4px; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 8px; background: #ffb77d; cursor: pointer; border-radius: 0;
+        }
+    </style>
+</head>
+<body class="font-body-sm text-body-sm overflow-x-hidden">
+<div class="scanline-overlay"></div>
+<div class="watermark-bg">05</div>
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-desktop h-16 bg-background/80 backdrop-blur-xl border-b border-outline-variant">
+<div class="font-headline-md text-headline-md font-black text-primary italic tracking-tighter">TACTICAL DIMENSION</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-body-sm text-body-sm uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all duration-300" href="#">STRATEGY</a>
+<a class="font-body-sm text-body-sm uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all duration-300" href="#">INTEL</a>
+<a class="font-body-sm text-body-sm uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all duration-300" href="#">LOGISTICS</a>
+<a class="font-body-sm text-body-sm uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all duration-300" href="#">COMMS</a>
+<a class="font-body-sm text-body-sm uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all duration-300" href="#">VOID</a>
+</div>
+<div class="flex items-center gap-6">
+
+<span class="material-symbols-outlined text-primary border-b-2 border-primary pb-1 cursor-pointer transition-all" data-icon="settings">settings</span>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] z-40 flex flex-col py-8 bg-surface-container-low/60 backdrop-blur-md border-r border-outline-variant w-64">
+<div class="px-6 mb-10">
+<h2 class="font-headline-md text-headline-md text-primary">SYSTEM STATUS</h2>
+<p class="font-data-mono text-data-mono text-on-surface-variant opacity-60">V.09-BETA</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/30 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="location_searching">location_searching</span>
+<span class="font-data-mono text-data-mono">COORDINATES</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/30 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-data-mono text-data-mono">TELEMETRY</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/30 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="lock">lock</span>
+<span class="font-data-mono text-data-mono">ENCRYPTION</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/30 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="radar">radar</span>
+<span class="font-data-mono text-data-mono">SENSORS</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/30 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="satellite_alt">satellite_alt</span>
+<span class="font-data-mono text-data-mono">UPLINK</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant/30 pt-4">
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-2 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="memory">memory</span>
+<span class="font-data-mono text-data-mono">DIAGNOSTICS</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-2 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="battery_charging_full">battery_charging_full</span>
+<span class="font-data-mono text-data-mono">POWER</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 pb-20 px-margin-desktop max-w-container-max mx-auto min-h-screen">
+<header class="mb-12 border-l-4 border-primary pl-6">
+<div class="font-label-caps text-label-caps text-primary mb-2">TERMINAL_01 // CONFIGURATION</div>
+<h1 class="font-headline-lg text-headline-lg uppercase">System Settings</h1>
+<p class="font-data-mono text-data-mono text-on-surface-variant mt-2">Adjust critical hardware and interface parameters for mission-level operation.</p>
+</header>
+<div class="grid grid-cols-12 gap-gutter">
+<!-- INTERFACE_TELEMETRY -->
+<section class="col-span-12 lg:col-span-8 bg-surface-container-low/40 backdrop-blur-xl border border-outline-variant hud-bracket p-6">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-secondary" data-icon="monitor_heart">monitor_heart</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">INTERFACE_TELEMETRY</h3>
+</div>
+<div class="space-y-6">
+<div class="space-y-4">
+<div class="flex justify-between font-data-mono text-data-mono">
+<span class="">HUD_OPACITY</span>
+<span class="text-primary" id="val-opacity">85%</span>
+</div>
+<input class="w-full" max="100" min="0" oninput="document.getElementById('val-opacity').innerText = this.value + '%'" type="range" value="85">
+</div>
+<div class="space-y-4">
+<div class="flex justify-between font-data-mono text-data-mono">
+<span class="">SCANLINE_INTENSITY</span>
+<span class="text-primary" id="val-scanline">12%</span>
+</div>
+<input class="w-full" max="50" min="0" oninput="document.getElementById('val-scanline').innerText = this.value + '%'" type="range" value="12">
+</div>
+<div class="grid grid-cols-3 gap-4 pt-4">
+
+
+
+</div>
+</div>
+</section>
+<!-- OPERATOR_PROFILE -->
+<section class="col-span-12 lg:col-span-4 bg-surface-container-high/40 backdrop-blur-xl border border-outline-variant p-8 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-primary" data-icon="badge">badge</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">&nbsp; &nbsp; OPERATOR</h3>
+</div>
+<div class="aspect-square w-full bg-surface-container-lowest border border-outline-variant mb-6 overflow-hidden relative group">
+<img class="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" data-alt="A futuristic tactical operator wearing high-tech sleek black armor and a digital visor that glows with amber interface elements. The operator is positioned in a dark, high-altitude command deck with holographic displays in the background. The lighting is low-key, focused on the operator's silhouette and glowing tech, creating an atmosphere of intense focus and military precision in a cyberpunk void aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxt0SG7m8MHTY6zgx4E9rqNybc1BS6VIkPOHVBUUplMmKvlmM8HQRs_QMbC3omZzSjLIawVoNIhGSL9Ql4tP7wuhAX0RKEJm_9ZCazX0VeqDI_6HsGbMDoJ7zc9d4RopOTDfdHkhJAK-d5Jp4ZZBIHHOwtiuKp2xrI50xDNMGZK46v5BLMQ_MCFpWZ7IO23Ab9eXYl4vwAqDWPMT6EMT-eHky_-cbthWyprs9BHzFntJT0jiXUOKp9paV4_qksbDKu1V90o5BG24u8">
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
+<div class="absolute bottom-4 left-4 font-label-caps text-label-caps text-primary">ID: TD-992-ALPHA</div>
+</div>
+<div class="space-y-4 font-data-mono text-data-mono">
+<div class="flex justify-between border-b border-outline-variant/30 pb-2">
+<span class="opacity-50">COMMANDER</span>
+<span class="">K. VANCE</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant/30 pb-2">
+<span class="opacity-50">MISSION_RANK</span>
+<span class="text-secondary">ELITE_EXARCH</span>
+</div>
+</div>
+</div>
+<button class="mt-8 border border-outline text-outline font-label-caps text-label-caps py-3 hover:bg-outline hover:text-background transition-all">MANAGE_CREDENTIALS</button>
+</section>
+<!-- HARDWARE_STATUS -->
+<section class="col-span-12 lg:col-span-6 bg-surface-container-low border border-outline-variant p-8">
+<div class="flex justify-between items-center mb-8">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="settings_input_component">settings_input_component</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">HARDWARE_STATUS</h3>
+</div>
+<span class="font-label-caps text-label-caps text-secondary animate-pulse">&nbsp;SYSTEM_STABLE</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-4">
+<div class="flex justify-between font-label-caps text-[10px] opacity-60">
+<span class="">CPU_LOAD</span>
+<span class="">42.8%</span>
+</div>
+<div class="h-2 bg-surface-container-highest w-full overflow-hidden">
+<div class="h-full bg-secondary w-[42.8%]"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between font-label-caps text-[10px] opacity-60">
+<span class="">GPU_LOAD</span>
+<span class="">18.2%</span>
+</div>
+<div class="h-2 bg-surface-container-highest w-full overflow-hidden">
+<div class="h-full bg-secondary w-[18.2%]"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between font-label-caps text-[10px] opacity-60">
+<span class="">VOID_BUFFER</span>
+<span class="">1.4 TB</span>
+</div>
+<div class="h-2 bg-surface-container-highest w-full overflow-hidden">
+<div class="h-full bg-primary w-[75%]"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between font-label-caps text-[10px] opacity-60">
+<span class="">UPLINK_STRENGTH</span>
+<span class="">98%</span>
+</div>
+<div class="h-2 bg-surface-container-highest w-full overflow-hidden">
+<div class="h-full bg-secondary glow-cobalt w-[98%]"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECURITY_PROTOCOLS -->
+<section class="col-span-12 lg:col-span-6 bg-surface-container-low border border-outline-variant p-8">
+<div class="flex items-center gap-2 mb-8">
+<span class="material-symbols-outlined text-error" data-icon="encrypted">encrypted</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">SECURITY_PROTOCOLS</h3>
+</div>
+<div class="space-y-6">
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest border border-outline-variant/30">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps">ENCRYPTION_LEVEL</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">AES-256 MULTI-LAYERED</span>
+</div>
+<div class="flex gap-1">
+<div class="w-2 h-6 bg-primary"></div>
+<div class="w-2 h-6 bg-primary"></div>
+<div class="w-2 h-6 bg-primary"></div>
+<div class="w-2 h-6 bg-primary"></div>
+<div class="w-2 h-6 bg-primary"></div>
+<div class="w-2 h-6 bg-surface-variant"></div>
+<div class="w-2 h-6 bg-surface-variant"></div>
+<div class="w-2 h-6 bg-surface-variant"></div>
+<div class="w-2 h-6 bg-surface-variant"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 border border-outline-variant/30">
+<span class="font-label-caps text-label-caps">BIOMETRIC_OVERRIDE</span>
+<div class="w-12 h-6 bg-error/20 border border-error relative cursor-pointer" onclick="this.classList.toggle('bg-error/20'); this.classList.toggle('bg-primary/20'); this.classList.toggle('border-error'); this.classList.toggle('border-primary')">
+<div class="absolute left-1 top-1 w-4 h-4 bg-error transition-all" style="left: calc(100% - 20px)"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 border border-outline-variant/30">
+<span class="font-label-caps text-label-caps">SIGNAL_MASKING</span>
+<div class="w-12 h-6 bg-primary/20 border border-primary relative cursor-pointer">
+<div class="absolute left-1 top-1 w-4 h-4 bg-primary transition-all"></div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- CTA Action -->
+<div class="mt-16 flex justify-end">
+<button class="relative group px-12 py-5 font-headline-md text-headline-md tracking-widest text-primary uppercase transition-all overflow-hidden border-2 border-primary hover:glow-amber">
+<span class="relative z-10">SAVE_CHANGES</span>
+<div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-white"></div>
+<div class="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-white"></div>
+</button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="fixed bottom-0 left-0 w-full z-50 flex justify-between items-center px-margin-desktop py-4 bg-background/90 border-t border-outline-variant">
+<div class="font-label-caps text-label-caps text-on-tertiary-fixed-variant">© 2142 TACTICAL DIMENSION PROTOCOL</div>
+<div class="flex gap-8">
+<a class="font-label-caps text-label-caps text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="#">SYSTEM TIMESTAMPS</a>
+<a class="font-label-caps text-label-caps text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="#">SECURITY ENCRYPTION</a>
+<a class="font-label-caps text-label-caps text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="#">VOID NET</a>
+</div>
+<div class="font-data-mono text-[10px] text-primary opacity-40">ST_CODE: CONFIG_77A-S</div>
+</footer>
+<script>
+        // Micro-interactions for that atmospheric feel
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.98) brightness(0.8)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1) brightness(1)';
+            });
+        });
+
+        // Simulating flickering opacity on click as per style guidance
+        const flickerEffect = (el) => {
+            let count = 0;
+            const interval = setInterval(() => {
+                el.style.opacity = Math.random() > 0.5 ? '1' : '0.5';
+                count++;
+                if (count > 6) {
+                    clearInterval(interval);
+                    el.style.opacity = '1';
+                }
+            }, 50);
+        };
+    </script>
+
+
+
+
+</body></html>

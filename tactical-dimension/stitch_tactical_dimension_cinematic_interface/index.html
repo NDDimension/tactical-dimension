@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TACTICAL DIMENSION v4.2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --void: #02040E;
+      --amber: #FF8C00;
+      --cobalt: #00A2FF;
+      --nav-h: 74px;
+      --side-w: 238px;
+      --ticker-h: 22px;
+    }
+
+    * { box-sizing: border-box; cursor: none; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--void);
+      color: #fff;
+      font-family: "Space Mono", monospace;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    #boot {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(255, 140, 0, 0.12), transparent 34%),
+        linear-gradient(180deg, #050815 0%, var(--void) 68%);
+      transition: opacity 700ms ease, visibility 700ms ease;
+    }
+
+    #boot.boot-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .boot-panel {
+      width: min(860px, 92vw);
+      text-align: center;
+    }
+
+    .boot-title {
+      margin: 0;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(64px, 11vw, 154px);
+      line-height: 0.86;
+      letter-spacing: 0.04em;
+      color: var(--amber);
+      text-shadow: 0 0 14px rgba(255, 140, 0, 0.9), 0 0 48px rgba(255, 140, 0, 0.35);
+    }
+
+    .boot-subtitle {
+      margin: 16px 0 36px;
+      color: var(--cobalt);
+      font-size: clamp(11px, 1.6vw, 14px);
+      letter-spacing: 0.18em;
+      text-shadow: 0 0 18px rgba(0, 162, 255, 0.5);
+    }
+
+    .boot-log {
+      min-height: 120px;
+      margin: 0 auto 28px;
+      padding: 18px 22px;
+      border: 1px solid rgba(255, 140, 0, 0.18);
+      background: rgba(2, 4, 14, 0.65);
+      text-align: left;
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      box-shadow: inset 0 0 24px rgba(0, 162, 255, 0.05);
+    }
+
+    .boot-log div {
+      min-height: 20px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .loading-track {
+      height: 4px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 140, 0, 0.18);
+      overflow: hidden;
+    }
+
+    .loading-fill {
+      height: 100%;
+      width: 0;
+      background: var(--amber);
+      box-shadow: 0 0 18px var(--amber);
+      animation: loadBar 3s ease forwards;
+    }
+
+    #enterBtn {
+      margin-top: 34px;
+      padding: 11px 28px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.84);
+      background: transparent;
+      color: #fff;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 26px;
+      letter-spacing: 0.09em;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: color 180ms ease, background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+      animation: fadeInUp 700ms ease 3.2s forwards;
+    }
+
+    #enterBtn:hover {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: #050505;
+      box-shadow: 0 0 24px rgba(255, 140, 0, 0.55);
+    }
+
+    #app {
+      position: fixed;
+      inset: 0;
+      opacity: 0;
+      visibility: hidden;
+      background: var(--void);
+      transition: opacity 500ms ease;
+      border: 10px solid #b7bfcd;
+      border-radius: 28px;
+      overflow: hidden;
+    }
+
+    #app.app-visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .top-nav {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      z-index: 1000;
+      height: var(--nav-h);
+      display: grid;
+      grid-template-columns: var(--side-w) 1fr 180px;
+      grid-template-rows: 16px 1fr;
+      align-items: center;
+      gap: 0 14px;
+      padding: 0 18px;
+      background: rgba(2, 4, 14, 0.86);
+      border-bottom: 1px solid rgba(255, 140, 0, 0.12);
+    }
+
+    .system-marquee {
+      grid-column: 1 / -1;
+      width: calc(100% + 36px);
+      margin-left: -18px;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 140, 0, 0.08);
+      color: rgba(255, 140, 0, 0.62);
+      font-size: 8px;
+      line-height: 16px;
+      letter-spacing: 0.18em;
+      white-space: nowrap;
+    }
+
+    .system-marquee span {
+      display: inline-block;
+      min-width: 200%;
+      animation: ticker 24s linear infinite;
+    }
+
+    .brand {
+      color: var(--amber);
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 24px;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 14px rgba(255, 140, 0, 0.45);
+      white-space: nowrap;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .nav-btn {
+      height: 25px;
+      padding: 0 6px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.72);
+      font-family: "Space Mono", monospace;
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      white-space: nowrap;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.12);
+      transition: color 150ms ease, border-color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      color: var(--amber);
+      border-color: rgba(255, 140, 0, 0.65);
+      background: rgba(255, 140, 0, 0.08);
+      box-shadow: 0 0 14px rgba(255, 140, 0, 0.24);
+      transform: translateY(-1px);
+    }
+
+    .sys-status {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 7px;
+      color: var(--cobalt);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #3cff72;
+      box-shadow: 0 0 10px #3cff72;
+      animation: blink 1s steps(2, end) infinite;
+    }
+
+    .side-nav {
+      position: fixed;
+      top: calc(10px + var(--nav-h));
+      left: 10px;
+      bottom: 10px;
+      z-index: 1000;
+      width: var(--side-w);
+      padding: 16px 12px;
+      background: linear-gradient(90deg, rgba(2, 4, 14, 0.9), rgba(2, 4, 14, 0.62), transparent);
+      border-right: 1px solid rgba(255, 255, 255, 0.035);
+    }
+
+    .side-id {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .side-avatar {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: linear-gradient(135deg, rgba(255, 140, 0, 0.28), rgba(0, 162, 255, 0.12));
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.45);
+    }
+
+    .side-id b {
+      display: block;
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+    }
+
+    .side-id span {
+      display: block;
+      margin-top: 5px;
+      color: rgba(255, 140, 0, 0.74);
+      font-size: 8px;
+      letter-spacing: 0.18em;
+    }
+
+    .side-buttons {
+      display: grid;
+      gap: 7px;
+    }
+
+    .side-btn {
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      align-items: center;
+      width: 100%;
+      min-height: 30px;
+      padding: 0 10px 0 6px;
+      border: 0;
+      border-left: 3px solid transparent;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.28);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-align: left;
+      transition: color 150ms ease, background 150ms ease, border-color 150ms ease;
+    }
+
+    .side-btn::before {
+      content: attr(data-icon);
+      color: rgba(255, 255, 255, 0.32);
+      font-size: 13px;
+    }
+
+    .side-btn::after {
+      content: attr(data-seq);
+      color: rgba(0, 162, 255, 0.34);
+      font-size: 8px;
+    }
+
+    .side-btn:hover,
+    .side-btn.active {
+      color: rgba(255, 255, 255, 0.88);
+      border-left-color: var(--cobalt);
+      background: rgba(0, 162, 255, 0.13);
+    }
+
+    .side-btn.active::before {
+      color: var(--cobalt);
+    }
+
+    .left-caliper {
+      position: fixed;
+      top: calc(10px + var(--nav-h) + 24px);
+      left: 10px;
+      bottom: 40px;
+      z-index: 1100;
+      width: 22px;
+      pointer-events: none;
+      background: repeating-linear-gradient(to bottom, rgba(255, 140, 0, 0.62) 0 1px, transparent 1px 26px);
+      opacity: 0.72;
+      mask-image: linear-gradient(to bottom, transparent, black 6%, black 94%, transparent);
+    }
+
+    .screen-stage {
+      position: fixed;
+      top: calc(10px + var(--nav-h));
+      left: calc(10px + var(--side-w));
+      right: 10px;
+      bottom: 10px;
+      background: var(--void);
+    }
+
+    .screen-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 320ms ease;
+      background: var(--void);
+      contain: strict;
+    }
+
+    .screen-frame.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+    }
+
+    #flash {
+      position: fixed;
+      top: calc(10px + var(--nav-h));
+      left: calc(10px + var(--side-w));
+      right: 10px;
+      bottom: 10px;
+      z-index: 1200;
+      pointer-events: none;
+      background: #000;
+      opacity: 0;
+      transition: opacity 220ms ease;
+    }
+
+    #flash.flash-on { opacity: 1; }
+
+    .progress {
+      position: fixed;
+      top: calc(10px + var(--nav-h));
+      right: 10px;
+      bottom: 10px;
+      z-index: 1300;
+      width: 3px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .progress-fill {
+      width: 100%;
+      height: 10%;
+      background: var(--amber);
+      box-shadow: 0 0 8px var(--amber);
+      transition: height 420ms ease;
+    }
+
+    .dots {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      z-index: 1300;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      transform: translateX(-50%);
+    }
+
+    .dot {
+      width: 24px;
+      height: 2px;
+      padding: 0;
+      border: 0;
+      background: rgba(255, 255, 255, 0.2);
+      transition: width 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .dot.active {
+      width: 40px;
+      background: var(--amber);
+      box-shadow: 0 0 10px var(--amber);
+    }
+
+    .corner {
+      position: fixed;
+      z-index: 1250;
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+      border-color: rgba(255, 140, 0, 0.8);
+      border-style: solid;
+      filter: drop-shadow(0 0 5px rgba(255, 140, 0, 0.45));
+    }
+
+    .corner.tl { top: calc(10px + var(--nav-h) + 14px); left: calc(10px + var(--side-w) + 14px); border-width: 1px 0 0 1px; }
+    .corner.tr { top: calc(10px + var(--nav-h) + 14px); right: 24px; border-width: 1px 1px 0 0; }
+    .corner.bl { bottom: 24px; left: calc(10px + var(--side-w) + 14px); border-width: 0 0 1px 1px; }
+    .corner.br { bottom: 24px; right: 24px; border-width: 0 1px 1px 0; }
+
+    .ticker {
+      position: fixed;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      z-index: 1300;
+      height: var(--ticker-h);
+      overflow: hidden;
+      border-top: 1px solid rgba(255, 140, 0, 0.15);
+      background: rgba(2, 4, 14, 0.95);
+    }
+
+    .ticker-text {
+      display: inline-block;
+      min-width: 200%;
+      color: rgba(255, 140, 0, 0.5);
+      font-size: 8px;
+      line-height: var(--ticker-h);
+      letter-spacing: 0.16em;
+      white-space: nowrap;
+      animation: ticker 22s linear infinite;
+    }
+
+    .section-label {
+      position: fixed;
+      right: 18px;
+      bottom: 42px;
+      z-index: 1300;
+      color: rgba(0, 162, 255, 0.5);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-shadow: 0 0 12px rgba(0, 162, 255, 0.35);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .cursor-ring,
+    .cursor-dot {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 10001;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor-ring {
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--amber);
+      border-radius: 50%;
+      transition: width 170ms ease, height 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
+    }
+
+    .cursor-ring.hovering {
+      width: 40px;
+      height: 40px;
+      border-color: var(--cobalt);
+      box-shadow: 0 0 14px rgba(0, 162, 255, 0.45);
+    }
+
+    .cursor-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 10px var(--amber);
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        transparent 0,
+        transparent 1px,
+        rgba(255, 255, 255, 0.015) 1px,
+        rgba(255, 255, 255, 0.015) 2px
+      );
+    }
+
+    @keyframes loadBar { to { width: 100%; } }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    @keyframes blink { 50% { opacity: 0.18; } }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    @media (max-width: 1120px) {
+      body {
+        --nav-h: 78px;
+        --side-w: 0px;
+      }
+
+      .top-nav {
+        grid-template-columns: 1fr auto;
+        height: var(--nav-h);
+      }
+
+      .nav-buttons {
+        grid-column: 1 / -1;
+        order: 2;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 5px;
+      }
+
+      .sys-status { order: 1; }
+
+      .side-nav,
+      .left-caliper {
+        display: none;
+      }
+
+      .screen-stage {
+        left: 10px;
+      }
+
+      #flash {
+        left: 10px;
+      }
+
+      .corner.tl,
+      .corner.bl {
+        left: 24px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .brand { font-size: 17px; }
+      .sys-status { font-size: 8px; }
+      .nav-btn { padding: 0 7px; }
+      .dots { gap: 6px; bottom: 24px; }
+      .dot { width: 16px; }
+      .dot.active { width: 30px; }
+      .section-label { right: 12px; font-size: 8px; max-width: calc(100vw - 24px); overflow: hidden; text-overflow: ellipsis; }
+    }
+  </style>
+</head>
+<body>
+  <main id="boot" aria-label="Boot sequence">
+    <section class="boot-panel">
+      <h1 class="boot-title">TACTICAL DIMENSION</h1>
+      <p class="boot-subtitle">[ SYSTEM INITIALIZING - SECTOR 7-G ]</p>
+      <div id="bootLog" class="boot-log" aria-live="polite"></div>
+      <div class="loading-track"><div class="loading-fill"></div></div>
+      <button id="enterBtn" type="button">[ ENTER THE DIMENSION ]</button>
+    </section>
+  </main>
+
+  <section id="app" aria-label="Tactical Dimension interface">
+    <nav class="top-nav" aria-label="Screen navigation">
+      <div class="system-marquee" aria-hidden="true">
+        <span>SYSTEM OPERATIONAL | DESIGN SEQUENCE ACTIVE | TACTICAL DIMENSION v4.2 | ALL SYSTEMS NOMINAL | SYSTEM OPERATIONAL | DESIGN SEQUENCE ACTIVE | TACTICAL DIMENSION v4.2 | ALL SYSTEMS NOMINAL |</span>
+      </div>
+      <div class="brand">TACTICAL_DIMENSION_v4.2</div>
+      <div id="navButtons" class="nav-buttons"></div>
+      <div class="sys-status"><span class="status-dot"></span><span>SYS_ONLINE</span></div>
+    </nav>
+
+    <aside class="side-nav" aria-label="Tactical rail navigation">
+      <div class="side-id">
+        <div class="side-avatar"></div>
+        <div>
+          <b>SECTOR 7-G</b>
+          <span>MISSION_ACTIVE</span>
+        </div>
+      </div>
+      <div id="sideButtons" class="side-buttons"></div>
+    </aside>
+    <div class="left-caliper"></div>
+    <div id="screenStage" class="screen-stage"></div>
+    <div id="flash"></div>
+    <div class="progress"><div id="progressFill" class="progress-fill"></div></div>
+    <div id="dots" class="dots" aria-label="Screen position"></div>
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+    <div id="sectionLabel" class="section-label">[ SECTION_01 - MISSION_START ]</div>
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-text">
+        [ TACTICAL DIMENSION v4.2 ] - [ ALL SYSTEMS NOMINAL ] - [ ENCRYPTION ACTIVE ] - [ SECTOR 7-G ONLINE ] - [ MISSION STATUS: ACTIVE ] - [ SIGNAL STRENGTH: 94% ] -
+        [ TACTICAL DIMENSION v4.2 ] - [ ALL SYSTEMS NOMINAL ] - [ ENCRYPTION ACTIVE ] - [ SECTOR 7-G ONLINE ] - [ MISSION STATUS: ACTIVE ] - [ SIGNAL STRENGTH: 94% ] -
+      </div>
+    </div>
+  </section>
+
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="scanlines"></div>
+
+  <script>
+    const screens = [
+      { nav: "MISSION", label: "MISSION_START", src: "tactical_dimension_mission_start_evolved/code.html", video: "../bg-01.mp4" },
+      { nav: "LOGISTICS", label: "GLOBAL_LOGISTICS", src: "global_logistics_v4.2_enhanced/code.html", video: "../bg-02.mp4" },
+      { nav: "INTEL", label: "STRATEGIC_INTEL", src: "strategic_intel_v4.3_enhanced/code.html", video: "../bg-03.mp4" },
+      { nav: "COMMS", label: "ENCRYPTED_COMMS", src: "encrypted_comms_v4.6_decryption_active/code.html", video: "../bg-04.mp4" },
+      { nav: "STRATEGY", label: "STRATEGY_CORE", src: "strategic_operations_terminal_v4.1/code.html", video: "../bg-05.mp4" },
+      { nav: "COORDINATES", label: "COORDINATES_TERMINAL", src: "coordinates_terminal_v4.9/code.html" },
+      { nav: "SENSORS", label: "SENSORS_TERMINAL", src: "sensors_terminal_v4.9/code.html" },
+      { nav: "DIAGNOSTICS", label: "DIAGNOSTICS", src: "diagnostics_terminal_v4.10/code.html" },
+      { nav: "SYS_CONFIG", label: "SYSTEM_CONFIGURATION", src: "system_configuration_terminal_v5.0/code.html" },
+      { nav: "THE_VOID", label: "THE_VOID", src: "the_void/code.html" }
+    ];
+
+    const bootLogLines = [
+      "INITIALIZING TACTICAL INTERFACE...",
+      "LOADING DIMENSION PROTOCOLS...",
+      "ESTABLISHING SECURE UPLINK...",
+      "ENCRYPTION LAYER: ACTIVE",
+      "ALL SYSTEMS NOMINAL - READY"
+    ];
+
+    const boot = document.getElementById("boot");
+    const app = document.getElementById("app");
+    const bootLog = document.getElementById("bootLog");
+    const enterBtn = document.getElementById("enterBtn");
+    const stage = document.getElementById("screenStage");
+    const navButtons = document.getElementById("navButtons");
+    const sideButtons = document.getElementById("sideButtons");
+    const dots = document.getElementById("dots");
+    const flash = document.getElementById("flash");
+    const progressFill = document.getElementById("progressFill");
+    const sectionLabel = document.getElementById("sectionLabel");
+    const cursorRing = document.getElementById("cursorRing");
+    const cursorDot = document.getElementById("cursorDot");
+
+    let activeIndex = 0;
+    let transitionLocked = false;
+    let wheelLocked = false;
+    let frames = [];
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let ringX = mouseX;
+    let ringY = mouseY;
+
+    bootLogLines.forEach((line, index) => {
+      setTimeout(() => typeBootLine(line), index * 600);
+    });
+
+    function typeBootLine(line) {
+      const row = document.createElement("div");
+      row.textContent = "> ";
+      bootLog.appendChild(row);
+      let i = 0;
+      const timer = setInterval(() => {
+        row.textContent = "> " + line.slice(0, i);
+        i += 1;
+        if (i > line.length) clearInterval(timer);
+      }, 18);
+    }
+
+    function buildInterface() {
+      screens.forEach((screen, index) => {
+        const frame = document.createElement("iframe");
+        frame.className = "screen-frame";
+        frame.title = screen.label.replaceAll("_", " ");
+        frame.src = "about:blank";
+        frame.dataset.src = screen.src;
+        frame.dataset.loaded = "false";
+        frame.dataset.index = index;
+        frame.addEventListener("load", () => {
+          installFrameCursor(frame);
+          if (screen.video && frame.contentWindow) {
+            frame.contentWindow.postMessage({ video: screen.video }, "*");
+          }
+          setTimeout(() => setFrameVideoState(frame, index === activeIndex && app.classList.contains("app-visible")), 80);
+        });
+        stage.appendChild(frame);
+        frames[index] = frame;
+
+        const nav = document.createElement("button");
+        nav.className = "nav-btn";
+        nav.type = "button";
+        nav.textContent = screen.nav;
+        nav.addEventListener("click", () => goTo(index));
+        navButtons.appendChild(nav);
+
+        const side = document.createElement("button");
+        side.className = "side-btn";
+        side.type = "button";
+        side.textContent = screen.nav;
+        side.dataset.seq = String(index + 1).padStart(2, "0");
+        side.dataset.icon = [">", "~", "@", "#", "+", "X", "O", "=", "*", "/"][index] || ">";
+        side.addEventListener("click", () => goTo(index));
+        sideButtons.appendChild(side);
+
+        const dot = document.createElement("button");
+        dot.className = "dot";
+        dot.type = "button";
+        dot.setAttribute("aria-label", `Go to ${screen.label}`);
+        dot.addEventListener("click", () => goTo(index));
+        dots.appendChild(dot);
+      });
+      updateChrome();
+    }
+
+    function ensureLoaded(index) {
+      const normalized = (index + screens.length) % screens.length;
+      const frame = frames[normalized];
+      if (!frame || frame.dataset.loaded === "true") return;
+      frame.dataset.loaded = "true";
+      frame.src = frame.dataset.src;
+    }
+
+    function manageLoadedFrames() {
+      const keep = new Set([
+        activeIndex,
+        (activeIndex + 1) % screens.length,
+        (activeIndex - 1 + screens.length) % screens.length
+      ]);
+
+      keep.forEach(ensureLoaded);
+
+      frames.forEach((frame, index) => {
+        const isActive = index === activeIndex;
+        frame.classList.toggle("active", isActive);
+        setFrameVideoState(frame, isActive);
+
+        if (!keep.has(index) && frame.dataset.loaded === "true") {
+          setTimeout(() => {
+            if (frame.classList.contains("active")) return;
+            const distance = Math.abs(index - activeIndex);
+            const wrappedDistance = Math.min(distance, screens.length - distance);
+            if (wrappedDistance <= 1) return;
+            frame.dataset.loaded = "false";
+            frame.src = "about:blank";
+          }, 700);
+        }
+      });
+    }
+
+    function setFrameVideoState(frame, shouldPlay) {
+      try {
+        const videos = frame.contentDocument ? frame.contentDocument.querySelectorAll("video") : [];
+        videos.forEach((video) => {
+          if (shouldPlay) {
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        });
+      } catch (error) {
+        return;
+      }
+    }
+
+    function installFrameCursor(frame) {
+      try {
+        const doc = frame.contentDocument;
+        if (!doc || doc.getElementById("td-parent-cursor-style")) return;
+        const style = doc.createElement("style");
+        style.id = "td-parent-cursor-style";
+        style.textContent = "*{cursor:none!important;}";
+        doc.head.appendChild(style);
+        doc.addEventListener("mousemove", (event) => {
+          const rect = frame.getBoundingClientRect();
+          mouseX = rect.left + event.clientX;
+          mouseY = rect.top + event.clientY;
+          cursorDot.style.left = `${mouseX}px`;
+          cursorDot.style.top = `${mouseY}px`;
+          cursorRing.classList.toggle("hovering", Boolean(event.target.closest("button,a,[role='button']")));
+        });
+        doc.addEventListener("mouseleave", () => cursorRing.classList.remove("hovering"));
+      } catch (error) {
+        console.warn("Cursor bridge unavailable for iframe", error);
+      }
+    }
+
+    function setActive(index) {
+      activeIndex = (index + screens.length) % screens.length;
+      ensureLoaded(activeIndex);
+      manageLoadedFrames();
+      updateChrome();
+    }
+
+    function updateChrome() {
+      document.querySelectorAll(".nav-btn").forEach((button, i) => button.classList.toggle("active", i === activeIndex));
+      document.querySelectorAll(".side-btn").forEach((button, i) => button.classList.toggle("active", i === activeIndex));
+      document.querySelectorAll(".dot").forEach((dot, i) => dot.classList.toggle("active", i === activeIndex));
+      progressFill.style.height = `${((activeIndex + 1) / screens.length) * 100}%`;
+      sectionLabel.textContent = `[ SECTION_${String(activeIndex + 1).padStart(2, "0")} - ${screens[activeIndex].label} ]`;
+    }
+
+    function goTo(index) {
+      const targetIndex = (index + screens.length) % screens.length;
+      if (transitionLocked || targetIndex === activeIndex) return;
+      transitionLocked = true;
+      ensureLoaded(targetIndex);
+      flash.classList.add("flash-on");
+      setTimeout(() => setActive(targetIndex), 250);
+      setTimeout(() => {
+        flash.classList.remove("flash-on");
+        transitionLocked = false;
+      }, 500);
+    }
+
+    enterBtn.addEventListener("click", () => {
+      boot.classList.add("boot-hidden");
+      app.classList.add("app-visible");
+      setActive(activeIndex);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (!app.classList.contains("app-visible")) return;
+      if (event.key === "ArrowRight") goTo(activeIndex + 1);
+      if (event.key === "ArrowLeft") goTo(activeIndex - 1);
+    });
+
+    window.addEventListener("wheel", (event) => {
+      if (!app.classList.contains("app-visible") || wheelLocked || Math.abs(event.deltaY) < 8) return;
+      wheelLocked = true;
+      goTo(activeIndex + (event.deltaY > 0 ? 1 : -1));
+      setTimeout(() => { wheelLocked = false; }, 1000);
+    }, { passive: true });
+
+    window.addEventListener("mousemove", (event) => {
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+      cursorDot.style.left = `${mouseX}px`;
+      cursorDot.style.top = `${mouseY}px`;
+    });
+
+    document.addEventListener("mouseover", (event) => {
+      cursorRing.classList.toggle("hovering", Boolean(event.target.closest("button")));
+    });
+
+    function animateCursor() {
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      cursorRing.style.left = `${ringX}px`;
+      cursorRing.style.top = `${ringY}px`;
+      requestAnimationFrame(animateCursor);
+    }
+
+    buildInterface();
+    animateCursor();
+  </script>
+</body>
+</html>

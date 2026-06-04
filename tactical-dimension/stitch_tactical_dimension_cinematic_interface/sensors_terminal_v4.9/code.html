@@ -1,0 +1,447 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Bebas+Neue&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        /* Custom styles for the Tactical Dimension HUD aesthetic */
+        body {
+            background-color: #000000;
+            overflow-x: hidden;
+            color: #e2e2e2;
+        }
+        .scanline {
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            opacity: 0.15;
+        }
+        .grid-background {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(0, 161, 254, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0, 161, 254, 0.05) 1px, transparent 1px);
+        }
+        .radar-sweep {
+            background: conic-gradient(from 0deg at 50% 50%, rgba(255, 183, 125, 0.2) 0deg, transparent 90deg);
+            animation: sweep 4s linear infinite;
+        }
+        @keyframes sweep {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .corner-bracket {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-color: #ffb77d;
+        }
+        .bracket-tl { top: 0; left: 0; border-top: 2px solid; border-left: 2px solid; }
+        .bracket-tr { top: 0; right: 0; border-top: 2px solid; border-right: 2px solid; }
+        .bracket-bl { bottom: 0; left: 0; border-bottom: 2px solid; border-left: 2px solid; }
+        .bracket-br { bottom: 0; right: 0; border-bottom: 2px solid; border-right: 2px solid; }
+        
+        .font-bebas { font-family: 'Bebas Neue', sans-serif; }
+        .font-space { font-family: 'Space Mono', monospace; }
+        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0e0e0e; }
+        ::-webkit-scrollbar-thumb { background: #ffb77d; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#2a2a2a",
+                        "tertiary-fixed": "#e5e2e1",
+                        "surface-container-highest": "#353535",
+                        "tertiary": "#c8c6c5",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-secondary": "#003355",
+                        "primary-fixed-dim": "#ffb77d",
+                        "on-background": "#e2e2e2",
+                        "surface-dim": "#131313",
+                        "on-error": "#690005",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-low": "#1b1b1b",
+                        "outline": "#a48c7a",
+                        "on-surface": "#e2e2e2",
+                        "secondary-fixed": "#cfe5ff",
+                        "secondary-container": "#00a1fe",
+                        "on-secondary-fixed": "#001d34",
+                        "background": "#131313",
+                        "surface-variant": "#353535",
+                        "on-tertiary": "#313030",
+                        "inverse-primary": "#904d00",
+                        "surface": "#131313",
+                        "surface-container": "#1f1f1f",
+                        "surface-bright": "#393939",
+                        "primary": "#ffb77d",
+                        "surface-tint": "#ffb77d",
+                        "error": "#ffb4ab",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#3f3e3e",
+                        "primary-container": "#ff8c00",
+                        "inverse-on-surface": "#303030",
+                        "secondary": "#99cbff",
+                        "tertiary-container": "#aba9a9",
+                        "primary-fixed": "#ffdcc3",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-primary-fixed": "#2f1500",
+                        "inverse-surface": "#e2e2e2",
+                        "outline-variant": "#564334",
+                        "on-primary-fixed-variant": "#6e3900",
+                        "secondary-fixed-dim": "#99cbff",
+                        "on-secondary-fixed-variant": "#004a78",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "on-primary": "#4d2600",
+                        "on-secondary-container": "#003559",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "on-surface-variant": "#ddc1ae",
+                        "on-primary-container": "#623200"
+                    },
+                    "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                    "spacing": { "unit": "4px", "gutter": "16px", "margin-mobile": "16px", "margin-desktop": "48px", "container-max": "1440px" },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "body-lg": ["JetBrains Mono"],
+                        "body-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Inter"],
+                        "data-mono": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "800" }],
+                        "headline-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.05em", "fontWeight": "900" }],
+                        "label-caps": ["11px", { "lineHeight": "1.0", "letterSpacing": "0.15em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "body-sm": ["13px", { "lineHeight": "1.5", "letterSpacing": "0.02em", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "900" }],
+                        "data-mono": ["14px", { "lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "500" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="grid-background selection:bg-primary/30 selection:text-primary" data-mode="connect">
+<div class="scanline"></div>
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant shadow-[0_0_15px_rgba(255,183,125,0.1)]">
+<div class="flex justify-between items-center h-16 px-gutter max-w-container-max mx-auto">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md text-primary tracking-tighter">TACTICAL_DIMENSION</span>
+</div>
+<div class="hidden md:flex items-center gap-8 font-label-caps text-label-caps uppercase">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">STRATEGY</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">INTEL</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">LOGISTICS</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">COMMS</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">VOID</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary active:scale-95 cursor-pointer">notifications</button>
+<button class="material-symbols-outlined text-primary active:scale-95 cursor-pointer">settings</button>
+</div>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 z-40 bg-surface-container-lowest/90 backdrop-blur-md border-r border-outline-variant flex flex-col py-6 space-y-4">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 bg-primary/20 border border-primary flex items-center justify-center">
+
+</div>
+<div>
+<h3 class="font-data-mono text-data-mono text-secondary">OP_CENTRAL</h3>
+<p class="text-[10px] text-on-surface-variant">SECTOR_07_ACTIVE</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="group flex items-center gap-4 px-6 py-3 font-data-mono text-data-mono text-on-surface-variant hover:bg-surface-container hover:text-secondary hover:border-l-2 hover:border-secondary transition-all" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 duration-200">location_searching</span>
+<span class="">COORDINATES</span>
+</a>
+<a class="group flex items-center gap-4 px-6 py-3 font-data-mono text-data-mono text-on-surface-variant hover:bg-surface-container hover:text-secondary hover:border-l-2 hover:border-secondary transition-all" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 duration-200">query_stats</span>
+<span class="">TELEMETRY</span>
+</a>
+<a class="group flex items-center gap-4 px-6 py-3 font-data-mono text-data-mono text-on-surface-variant hover:bg-surface-container hover:text-secondary hover:border-l-2 hover:border-secondary transition-all" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 duration-200">enhanced_encryption</span>
+<span class="">ENCRYPTION</span>
+</a>
+<!-- ACTIVE TAB: SENSORS -->
+<a class="group flex items-center gap-4 px-6 py-3 font-data-mono text-data-mono text-primary bg-surface-container-high border-r-4 border-primary shadow-[inset_-10px_0_10px_-10px_rgba(255,183,125,0.3)]" href="#">
+<span class="material-symbols-outlined">radar</span>
+<span class="">SENSORS</span>
+</a>
+<a class="group flex items-center gap-4 px-6 py-3 font-data-mono text-data-mono text-on-surface-variant hover:bg-surface-container hover:text-secondary hover:border-l-2 hover:border-secondary transition-all" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 duration-200">satellite_alt</span>
+<span class="">UPLINK</span>
+</a>
+</nav>
+<div class="px-6 space-y-4 pt-6 border-t border-outline-variant">
+<button class="w-full bg-primary text-on-primary py-2 px-4 font-label-caps text-label-caps active:scale-95 transition-transform">
+                INITIATE_UPLINK
+            </button>
+<div class="space-y-1">
+<a class="flex items-center gap-4 py-2 font-data-mono text-data-mono text-on-surface-variant hover:text-secondary transition-colors" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span class="">DIAGNOSTICS</span>
+</a>
+
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-8 min-h-[calc(100vh-64px)] pb-12 relative">
+<!-- Dashboard Header -->
+<header class="mb-10 flex justify-between items-end">
+<div>
+<h1 class="font-bebas text-6xl text-primary tracking-widest leading-none">SENSORS TERMINAL</h1>
+<p class="font-space text-secondary text-sm mt-2 opacity-80 uppercase">Deep Field Surveillance &amp; Bio-Metric Oversight</p>
+</div>
+<div class="font-space text-right text-xs">
+<p class="text-on-surface-variant">NODE_001_LOCAL</p>
+<p class="text-primary mt-1 font-bold">SIGNAL_STRENGTH: 100%</p>
+</div>
+</header>
+<!-- Main Bento Grid -->
+<div class="grid grid-cols-12 gap-6 max-w-container-max mx-auto">
+<!-- Hero Element: DEEP SPACE SCANNER -->
+<section class="col-span-12 lg:col-span-8 bg-surface-container-lowest/60 border border-outline-variant relative overflow-hidden h-[500px] group backdrop-blur-sm">
+<div class="corner-bracket bracket-tl"></div><div class="corner-bracket bracket-tr"></div>
+<div class="corner-bracket bracket-bl"></div><div class="corner-bracket bracket-br"></div>
+<div class="absolute top-4 left-4 font-bebas text-2xl text-secondary z-10">DEEP SPACE SCANNER</div>
+<div class="absolute top-4 right-4 font-space text-[10px] text-on-surface-variant z-10 flex gap-4">
+<span class="">MODE: OMNIDIRECTIONAL</span>
+<span class="">RANGE: 400k LY</span>
+</div>
+<!-- Radar Visualization -->
+<div class="absolute inset-0 flex items-center justify-center">
+<!-- Concentric Rings -->
+<div class="absolute w-[400px] h-[400px] border border-secondary/10 rounded-full"></div>
+<div class="absolute w-[300px] h-[300px] border border-secondary/10 rounded-full"></div>
+<div class="absolute w-[200px] h-[200px] border border-secondary/20 rounded-full"></div>
+<div class="absolute w-[100px] h-[100px] border border-secondary/30 rounded-full"></div>
+<!-- Axis Lines -->
+<div class="absolute h-full w-[1px] bg-secondary/5"></div>
+<div class="absolute w-full h-[1px] bg-secondary/5"></div>
+<!-- The Sweep -->
+<div class="absolute w-[500px] h-[500px] radar-sweep rounded-full"></div>
+<!-- Bogeys (Randomly placed dots) -->
+<div class="absolute inset-0" id="bogey-container">
+<!-- Generated by JS -->
+<div class="absolute bg-primary rounded-full shadow-[0_0_5px_#ffb77d] transition-opacity duration-1000" style="left: 12.1734%; top: 82.9216%; width: 3px; height: 3px; opacity: 1;"></div><div class="absolute bg-primary rounded-full shadow-[0_0_5px_#ffb77d] transition-opacity duration-1000" style="left: 12.0745%; top: 49.6601%; width: 3px; height: 3px; opacity: 1;"></div><div class="absolute bg-primary rounded-full shadow-[0_0_5px_#ffb77d] transition-opacity duration-1000" style="left: 45.0244%; top: 11.6294%; width: 4px; height: 4px; opacity: 0;"></div><div class="absolute bg-primary rounded-full shadow-[0_0_5px_#ffb77d] transition-opacity duration-1000" style="left: 39.3305%; top: 88.398%; width: 4px; height: 4px; opacity: 1;"></div><div class="absolute bg-primary rounded-full shadow-[0_0_5px_#ffb77d] transition-opacity duration-1000" style="left: 63.0926%; top: 82.4618%; width: 2px; height: 2px; opacity: 1;"></div></div>
+<!-- Center Point -->
+<div class="absolute w-2 h-2 bg-primary rounded-full pulse shadow-[0_0_10px_#ffb77d]"></div>
+</div>
+<div class="absolute bottom-4 left-4 font-space text-[10px] text-primary space-y-1">
+<div class="flex items-center gap-2"><span class="w-1 h-1 bg-primary"></span> SCANNING_THETA_9</div>
+<div class="flex items-center gap-2"><span class="w-1 h-1 bg-primary"></span> NO_INTERFERENCE_DETECTED</div>
+</div>
+</section>
+<!-- Panel 1: BIO-RHYTHM TELEMETRY -->
+<section class="col-span-12 lg:col-span-4 bg-surface-container-lowest/60 border border-outline-variant p-6 relative backdrop-blur-sm">
+<div class="corner-bracket bracket-tl"></div><div class="corner-bracket bracket-tr"></div>
+<div class="corner-bracket bracket-bl"></div><div class="corner-bracket bracket-br"></div>
+<h3 class="font-bebas text-xl text-primary mb-4 tracking-wider">BIO-RHYTHM TELEMETRY</h3>
+<div class="space-y-6">
+<div class="flex justify-between items-center border-b border-outline-variant pb-2">
+<span class="font-space text-xs text-on-surface-variant">SUBJECT</span>
+<span class="font-space text-sm text-primary">COMMANDER_PROFILE</span>
+</div>
+<!-- Heart Rate Wave Simulation -->
+<div>
+<div class="flex justify-between items-baseline mb-2">
+<span class="font-space text-[10px] text-secondary">HEART_RATE</span>
+<span class="font-bebas text-3xl text-primary">72 <span class="text-xs">BPM</span></span>
+</div>
+<div class="h-16 w-full overflow-hidden relative border-l border-b border-primary/20">
+<svg class="w-full h-full stroke-primary fill-none stroke-1" viewBox="0 0 200 40">
+<path class="animate-[dash_5s_linear_infinite]" d="M0 20 L20 20 L25 10 L30 30 L35 20 L60 20 L65 5 L70 35 L75 20 L100 20 L105 15 L110 25 L115 20 L140 20 L145 0 L150 40 L155 20 L200 20" style="stroke-dasharray: 200; stroke-dashoffset: 200;"></path>
+<style>
+                                    @keyframes dash {
+                                        to { stroke-dashoffset: 0; }
+                                    }
+                                </style>
+</svg>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-primary/5 p-3 border border-primary/10">
+<span class="block font-space text-[10px] text-on-surface-variant mb-1">O2_SATURATION</span>
+<span class="font-bebas text-2xl text-primary">98.4%</span>
+</div>
+<div class="bg-primary/5 p-3 border border-primary/10">
+<span class="block font-space text-[10px] text-on-surface-variant mb-1">CORTISOL_LVL</span>
+<span class="font-bebas text-2xl text-primary">0.12</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-[10px] font-space text-secondary animate-pulse">
+<span class="material-symbols-outlined text-xs">ecg</span>
+                        STATUS: STABLE_VITAL_SIGNS
+                    </div>
+</div>
+</section>
+<!-- Panel 2: ENVIRONMENTAL_ANALYSIS -->
+<section class="col-span-12 lg:col-span-6 bg-surface-container-lowest/60 border border-outline-variant p-6 relative backdrop-blur-sm">
+<div class="corner-bracket bracket-tl"></div><div class="corner-bracket bracket-tr"></div>
+<div class="corner-bracket bracket-bl"></div><div class="corner-bracket bracket-br"></div>
+<h3 class="font-bebas text-xl text-secondary mb-6 tracking-wider">ENVIRONMENTAL_ANALYSIS</h3>
+<div class="grid grid-cols-3 gap-6">
+<div class="space-y-4">
+<div class="text-center py-4 border border-secondary/20 relative">
+<div class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 bg-surface font-space text-[9px] text-secondary">ATMOS</div>
+<div class="font-bebas text-4xl text-primary">1.02</div>
+<div class="font-space text-[9px] text-on-surface-variant">BAR_PRESSURE</div>
+</div>
+<div class="h-1 bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary w-[85%]"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="text-center py-4 border border-error/20 relative">
+<div class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 bg-surface font-space text-[9px] text-error">TOXIC</div>
+<div class="font-bebas text-4xl text-error">0.03</div>
+<div class="font-space text-[9px] text-on-surface-variant">PARTS_PER_MIL</div>
+</div>
+<div class="h-1 bg-surface-container overflow-hidden">
+<div class="h-full bg-error w-[4%]"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="text-center py-4 border border-secondary/20 relative">
+<div class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 bg-surface font-space text-[9px] text-secondary">GRAV</div>
+<div class="font-bebas text-4xl text-primary">0.98</div>
+<div class="font-space text-[9px] text-on-surface-variant">G_FORCE_UNITS</div>
+</div>
+<div class="h-1 bg-surface-container overflow-hidden">
+<div class="h-full bg-primary w-[98%]"></div>
+</div>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-2 gap-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-sm bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm text-secondary">thermostat</span>
+</div>
+<div>
+<p class="font-space text-[9px] text-on-surface-variant">EXT_TEMP</p>
+<p class="font-bebas text-lg text-primary">-2.4°C</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-sm bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm text-secondary">opacity</span>
+</div>
+<div>
+<p class="font-space text-[9px] text-on-surface-variant">HUMIDITY</p>
+<p class="font-bebas text-lg text-primary">0.001%</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Panel 3: PROXIMITY_ALERT -->
+<section class="col-span-12 lg:col-span-6 bg-error-container/10 border border-error p-6 relative overflow-hidden group">
+<div class="corner-bracket bracket-tl !border-error"></div><div class="corner-bracket bracket-tr !border-error"></div>
+<div class="corner-bracket bracket-bl !border-error"></div><div class="corner-bracket bracket-br !border-error"></div>
+<div class="absolute top-0 left-0 w-full h-1 bg-error animate-pulse"></div>
+<div class="flex items-center gap-4 mb-6">
+<div class="bg-error p-2 text-on-error">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<h3 class="font-bebas text-2xl text-error tracking-widest">PROXIMITY_ALERT</h3>
+</div>
+<div class="bg-black/50 p-6 border-l-4 border-error">
+<p class="font-space text-lg text-primary mb-2 animate-pulse font-bold">UNIDENTIFIED_OBJECT_DETECTED</p>
+<div class="grid grid-cols-2 gap-y-4 font-space text-[10px] text-on-surface-variant uppercase">
+<div class="">VECTOR: <span class="text-error">214.5.99</span></div>
+<div class="">VELOCITY: <span class="text-error">MACH_12</span></div>
+<div class="">DISTANCE: <span class="text-error">24.5k KM</span></div>
+<div class="">ETA: <span class="text-error">00:04:22</span></div>
+</div>
+</div>
+<div class="mt-6 flex gap-4">
+<button class="flex-1 bg-error text-on-error font-label-caps py-2 hover:opacity-90 active:scale-95 transition-all">ENGAGE_DEFENSE</button>
+<button class="flex-1 border border-error text-error font-label-caps py-2 hover:bg-error/10 active:scale-95 transition-all">IGNORE_HAZARD</button>
+</div>
+</section>
+</div>
+<!-- System Logs / Footer Metadata -->
+<div class="mt-12 max-w-container-max mx-auto border-t border-outline-variant pt-4 flex justify-between items-center font-space text-[10px] text-on-surface-variant">
+<div class="flex gap-6">
+<span class="">INDEX_001.004.992</span>
+<span class="text-primary">[ SENSORS_ARRAY_ACTIVE // TACTICAL_DIMENSION_v4.9 ]</span>
+</div>
+<div class="flex gap-4">
+<span class="text-secondary">SYSTEM_UPTIME: 142:09:11</span>
+<span id="system-clock" class="">06:19:41 UTC</span>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interactions and Radar Logic
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toISOString().split('T')[1].split('.')[0] + ' UTC';
+            document.getElementById('system-clock').textContent = timeStr;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Bogey Generator for Radar
+        const bogeyContainer = document.getElementById('bogey-container');
+        function createBogey() {
+            const bogey = document.createElement('div');
+            const x = Math.random() * 80 + 10;
+            const y = Math.random() * 80 + 10;
+            const size = Math.floor(Math.random() * 4) + 2;
+            
+            bogey.className = 'absolute bg-primary rounded-full shadow-[0_0_5px_#ffb77d] transition-opacity duration-1000';
+            bogey.style.left = `${x}%`;
+            bogey.style.top = `${y}%`;
+            bogey.style.width = `${size}px`;
+            bogey.style.height = `${size}px`;
+            bogey.style.opacity = '0';
+
+            bogeyContainer.appendChild(bogey);
+
+            // Appear and disappear
+            setTimeout(() => bogey.style.opacity = '1', 100);
+            setTimeout(() => {
+                bogey.style.opacity = '0';
+                setTimeout(() => bogey.remove(), 1000);
+            }, 3000 + Math.random() * 2000);
+        }
+
+        setInterval(createBogey, 2000);
+
+        // Ambient Hover sound simulation (Visual only)
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                // Potential for subtle glow enhancement on hover
+            });
+        });
+    </script>
+
+
+</body></html>

@@ -1,0 +1,485 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TACTICAL DIMENSION | STRATEGY</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;700;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+        body {
+            background-color: #131313;
+            color: #e2e2e2;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-bebas { font-family: 'Bebas Neue', cursive; }
+        .font-mono-data { font-family: 'Space Mono', monospace; }
+
+        /* Scanline Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.3;
+        }
+
+        /* 3D Extrusion Effect */
+        .text-extruded {
+            color: white;
+            text-shadow: 
+                0 1px 0 #001580, 0 2px 0 #001580, 0 3px 0 #001580, 0 4px 0 #001580,
+                0 5px 0 #001580, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1),
+                0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25),
+                0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);
+        }
+
+        /* HUD L-Brackets */
+        .bracket-tl { border-top: 2px solid #ffb77d; border-left: 2px solid #ffb77d; width: 20px; height: 20px; position: absolute; top: -2px; left: -2px; }
+        .bracket-tr { border-top: 2px solid #ffb77d; border-right: 2px solid #ffb77d; width: 20px; height: 20px; position: absolute; top: -2px; right: -2px; }
+        .bracket-bl { border-bottom: 2px solid #ffb77d; border-left: 2px solid #ffb77d; width: 20px; height: 20px; position: absolute; bottom: -2px; left: -2px; }
+        .bracket-br { border-bottom: 2px solid #ffb77d; border-right: 2px solid #ffb77d; width: 20px; height: 20px; position: absolute; bottom: -2px; right: -2px; }
+
+        /* Starfield Particle Background */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Cobalt Glow Ring */
+        .glow-ring {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 161, 254, 0.2);
+            box-shadow: 0 0 60px rgba(0, 161, 254, 0.1);
+            top: 20%;
+            left: -100px;
+            pointer-events: none;
+            animation: pulse-glow 8s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            from { transform: scale(1); opacity: 0.2; }
+            to { transform: scale(1.1); opacity: 0.5; }
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.2em;
+            background: #ffb77d;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .glass-panel {
+            background: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(226, 226, 226, 0.1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "on-background": "#e2e2e2",
+                "on-error": "#690005",
+                "primary-fixed-dim": "#ffb77d",
+                "on-tertiary": "#313030",
+                "surface-variant": "#353535",
+                "on-primary-fixed": "#2f1500",
+                "on-tertiary-container": "#3f3e3e",
+                "secondary-fixed-dim": "#99cbff",
+                "on-primary-fixed-variant": "#6e3900",
+                "surface-container-highest": "#353535",
+                "inverse-primary": "#904d00",
+                "on-primary": "#4d2600",
+                "on-secondary-container": "#003559",
+                "on-secondary-fixed": "#001d34",
+                "tertiary": "#c8c6c5",
+                "surface-container-lowest": "#0e0e0e",
+                "background": "#131313",
+                "on-primary-container": "#623200",
+                "error-container": "#93000a",
+                "surface-container-low": "#1b1b1b",
+                "surface-bright": "#393939",
+                "primary-fixed": "#ffdcc3",
+                "outline-variant": "#564334",
+                "secondary-fixed": "#cfe5ff",
+                "primary": "#ffb77d",
+                "outline": "#a48c7a",
+                "inverse-on-surface": "#303030",
+                "surface-tint": "#ffb77d",
+                "inverse-surface": "#e2e2e2",
+                "on-secondary-fixed-variant": "#004a78",
+                "surface-container": "#1f1f1f",
+                "secondary-container": "#00a1fe",
+                "on-surface": "#e2e2e2",
+                "on-tertiary-fixed": "#1c1b1b",
+                "on-secondary": "#003355",
+                "on-tertiary-fixed-variant": "#474746",
+                "on-error-container": "#ffdad6",
+                "tertiary-fixed-dim": "#c8c6c5",
+                "error": "#ffb4ab",
+                "tertiary-container": "#aba9a9",
+                "surface-dim": "#131313",
+                "primary-container": "#ff8c00",
+                "tertiary-fixed": "#e5e2e1",
+                "on-surface-variant": "#ddc1ae",
+                "surface": "#131313",
+                "surface-container-high": "#2a2a2a",
+                "secondary": "#99cbff"
+              },
+              "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+              },
+              "spacing": {
+                "margin-mobile": "16px",
+                "unit": "4px",
+                "margin-desktop": "48px",
+                "container-max": "1440px",
+                "gutter": "16px"
+              },
+              "fontFamily": {
+                "headline-lg-mobile": ["Inter"],
+                "headline-md": ["Inter"],
+                "body-lg": ["JetBrains Mono"],
+                "headline-lg": ["Inter"],
+                "data-mono": ["JetBrains Mono"],
+                "body-sm": ["JetBrains Mono"],
+                "label-caps": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                "headline-lg-mobile": ["32px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "900"}],
+                "headline-md": ["24px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "800"}],
+                "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                "headline-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.05em", "fontWeight": "900"}],
+                "data-mono": ["14px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                "body-sm": ["13px", {"lineHeight": "1.5", "letterSpacing": "0.02em", "fontWeight": "400"}],
+                "label-caps": ["11px", {"lineHeight": "1.0", "letterSpacing": "0.15em", "fontWeight": "700"}]
+              }
+            }
+          }
+        }
+    </script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;display=swap" data-snapdom="injected-import"></head>
+<body class="bg-background selection:bg-primary selection:text-background" data-mode="connect">
+<div class="scanlines"></div>
+<canvas id="starfield" width="1280" height="1291"></canvas>
+<!-- Watermark Background -->
+<div class="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+<span class="font-bebas text-[20vw] opacity-[0.04] text-on-background select-none">01</span>
+</div>
+<!-- Cobalt Glow Ring HUD -->
+<div class="glow-ring"></div>
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-desktop h-16 bg-background/80 backdrop-blur-xl border-b border-outline-variant">
+<div class="font-headline-md text-headline-md font-black text-primary italic tracking-tighter">TACTICAL DIMENSION</div>
+<div class="flex items-center gap-8">
+<div class="flex gap-6">
+<a class="font-body-sm text-body-sm uppercase tracking-widest text-primary border-b-2 border-primary pb-1" href="#">STRATEGY</a>
+<a class="font-body-sm text-body-sm uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all duration-300" href="#">INTEL</a>
+<a class="font-body-sm text-body-sm uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all duration-300" href="#">LOGISTICS</a>
+<a class="font-body-sm text-body-sm uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all duration-300" href="#">COMMS</a>
+<a class="font-body-sm text-body-sm uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all duration-300" href="#">VOID</a>
+</div>
+<div class="flex items-center gap-4 text-primary">
+
+<span class="material-symbols-outlined cursor-pointer hover:glow-sm transition-all">settings</span>
+</div>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] z-40 flex flex-col py-8 bg-surface-container-low/60 backdrop-blur-md border-r border-outline-variant w-64">
+<div class="px-6 mb-8">
+<h2 class="font-headline-md text-headline-md text-primary font-bebas">SYSTEM STATUS</h2>
+<p class="font-data-mono text-label-caps text-on-surface-variant opacity-60">V.09-BETA</p>
+</div>
+<nav class="flex-1 flex flex-col">
+<a class="flex items-center gap-4 bg-secondary-container/20 text-secondary border-r-4 border-secondary px-4 py-3 font-data-mono text-data-mono" href="#">
+<span class="material-symbols-outlined">location_searching</span> COORDINATES
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/30 hover:text-on-surface transition-all font-data-mono text-data-mono" href="#">
+<span class="material-symbols-outlined">analytics</span> TELEMETRY
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/30 hover:text-on-surface transition-all font-data-mono text-data-mono" href="#">
+<span class="material-symbols-outlined">lock</span> ENCRYPTION
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/30 hover:text-on-surface transition-all font-data-mono text-data-mono" href="#">
+<span class="material-symbols-outlined">radar</span> SENSORS
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-variant/30 hover:text-on-surface transition-all font-data-mono text-data-mono" href="#">
+<span class="material-symbols-outlined">satellite_alt</span> UPLINK
+            </a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-4">
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:text-primary transition-all font-data-mono text-data-mono" href="#">
+<span class="material-symbols-outlined">memory</span> DIAGNOSTICS
+            </a>
+
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 mt-16 p-margin-desktop min-h-screen relative z-10 max-w-[1440px] mx-auto">
+<!-- Hero Header -->
+<header class="mb-12">
+<h1 class="font-bebas text-8xl text-extruded tracking-wide uppercase">THE_STRATEGY_CORE</h1>
+<div class="flex items-center gap-4 mt-4 font-mono-data text-primary text-sm">
+<span class="animate-pulse">●</span> OPERATIONAL_READY
+                <span class="text-on-surface-variant">//</span>
+<span class="">GRID_SEC_A1</span>
+<span class="text-on-surface-variant">//</span>
+<span class="">TIMESTAMP: 2142.09.12</span>
+</div>
+</header>
+<div class="grid grid-cols-12 gap-gutter">
+<!-- MISSION_OBJECTIVES Panel -->
+<div class="col-span-12 lg:col-span-5 glass-panel p-8 relative" style="opacity: 1; transform: scale(1);">
+<div class="bracket-tl"></div><div class="bracket-tr"></div><div class="bracket-bl"></div><div class="bracket-br"></div>
+<h3 class="font-bebas text-3xl mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">target</span> MISSION_OBJECTIVES
+                </h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3">
+<div class="flex gap-4">
+<span class="font-data-mono text-xs opacity-50">001</span>
+<div>
+<p class="font-bold">SECURE_VOID_GATEWAY</p>
+<p class="text-xs text-on-surface-variant font-mono-data">ELIMINATE PERIMETER HOSTILES</p>
+</div>
+</div>
+<span class="bg-primary/20 text-primary border border-primary text-[10px] px-2 py-1 font-bold animate-pulse">ACTIVE</span>
+</div>
+<div class="flex items-center justify-between border-b border-outline-variant pb-3">
+<div class="flex gap-4">
+<span class="font-data-mono text-xs opacity-50">002</span>
+<div>
+<p class="font-bold">DECRYPT_UPLINK_SIGNALS</p>
+<p class="text-xs text-on-surface-variant font-mono-data">EXTRACT SECTOR COORDINATES</p>
+</div>
+</div>
+<span class="bg-surface-variant/50 text-tertiary border border-outline text-[10px] px-2 py-1 font-bold">PENDING</span>
+</div>
+<div class="flex items-center justify-between border-b border-outline-variant pb-3">
+<div class="flex gap-4">
+<span class="font-data-mono text-xs opacity-50">003</span>
+<div>
+<p class="font-bold">ALPHA_TEAM_INSERTION</p>
+<p class="text-xs text-on-surface-variant font-mono-data">STEALTH DROP AT POINT_ZERO</p>
+</div>
+</div>
+<span class="bg-secondary/20 text-secondary border border-secondary text-[10px] px-2 py-1 font-bold">COMPLETED</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex gap-4">
+<span class="font-data-mono text-xs opacity-50">004</span>
+<div>
+<p class="font-bold">VOID_CONSTRUCTION_RECON</p>
+<p class="text-xs text-on-surface-variant font-mono-data">IDENTIFY ANOMALY SOURCE</p>
+</div>
+</div>
+<span class="bg-surface-variant/50 text-tertiary border border-outline text-[10px] px-2 py-1 font-bold">PENDING</span>
+</div>
+</div>
+</div>
+<!-- BATTLE_ORDER Flow -->
+<div class="col-span-12 lg:col-span-7 glass-panel p-8 relative" style="opacity: 1; transform: scale(1);">
+<div class="bracket-tl"></div><div class="bracket-tr"></div><div class="bracket-bl"></div><div class="bracket-br"></div>
+<h3 class="font-bebas text-3xl mb-6">BATTLE_ORDER_SEQUENCE</h3>
+<div class="relative flex flex-col gap-12 ml-6">
+<div class="absolute left-[-1.5rem] top-2 bottom-2 w-[1px] bg-outline-variant"></div>
+<!-- Sequence Item 1 -->
+<div class="relative flex items-start gap-8 group">
+<div class="absolute left-[-2rem] top-1.5 w-4 h-4 bg-primary border-4 border-background rounded-sm z-10"></div>
+<div class="flex-1 glass-panel p-4 border-l-4 border-primary hover:bg-primary/5 transition-all" style="opacity: 1; transform: scale(1);">
+<div class="flex justify-between items-center mb-2">
+<h4 class="font-bold text-primary font-mono-data">PHASE_01: INFILTRATION</h4>
+<span class="text-xs font-mono-data opacity-50">EXECUTION: 04:00</span>
+</div>
+<p class="text-sm text-on-surface-variant">Deploy Shadow-Class operatives to secure LZ-Alpha. Jam local transmission frequencies.</p>
+</div>
+</div>
+<!-- Sequence Item 2 -->
+<div class="relative flex items-start gap-8 group">
+<div class="absolute left-[-2rem] top-1.5 w-4 h-4 bg-outline border-4 border-background rounded-sm z-10"></div>
+<div class="flex-1 glass-panel p-4 border-l-4 border-outline hover:bg-white/5 transition-all opacity-70">
+<div class="flex justify-between items-center mb-2">
+<h4 class="font-bold font-mono-data">PHASE_02: EXTRACTION</h4>
+<span class="text-xs font-mono-data opacity-50">TBD</span>
+</div>
+<p class="text-sm text-on-surface-variant">Recover high-value data modules from sub-level 4. Evac via Vulture-7.</p>
+</div>
+</div>
+<!-- Sequence Item 3 -->
+<div class="relative flex items-start gap-8 group">
+<div class="absolute left-[-2rem] top-1.5 w-4 h-4 bg-outline border-4 border-background rounded-sm z-10"></div>
+<div class="flex-1 glass-panel p-4 border-l-4 border-outline hover:bg-white/5 transition-all opacity-50">
+<h4 class="font-bold font-mono-data mb-2">PHASE_03: ANOMALY_SURGE</h4>
+<p class="text-sm text-on-surface-variant">Analyze core resonance and prepare for quantum stabilizer activation.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- COMMAND_DIRECTIVES Terminal -->
+<div class="col-span-12 glass-panel p-6 bg-black/80 font-mono-data border-t-2 border-primary relative overflow-hidden" style="opacity: 1; transform: scale(1);">
+<div class="absolute top-0 right-0 p-2 text-[10px] text-primary bg-primary/10 border-b border-l border-primary/20">SCANNING...</div>
+<div class="flex items-center gap-2 mb-4 text-primary text-xs border-b border-primary/10 pb-2">
+<span class="material-symbols-outlined text-sm">terminal</span> COMMAND_CONSOLE_V3.1
+                </div>
+<div class="text-primary text-sm leading-relaxed space-y-2 min-h-[120px]" id="terminal-content">
+<!-- Typing effect injects here -->
+<p id="line-0" class="">&gt; INITIALIZING STRATEGIC OVERLAY...</p><p id="line-1" class="">&gt; DATA PACKETS RECEIVED FROM SECTOR 7G.</p><p id="line-2" class="">&gt; ALERT: VOID SIGNATURE DETECTED IN QUADRANT B.</p><p id="line-0" class=""></p><p id="line-1" class=""></p><p id="line-2" class=""></p><p id="line-3" class="">&gt; DIRECTIVE 01: ENGAGE PERIMETER DEFENSES.</p><p id="line-4" class="">&gt; DIRECTIVE 02: MAINTAIN TOTAL RADIO SILENCE.</p><p id="line-5" class="">&gt; DIRECTIVE 03: PREPARE FOR ANOMALY STABILIZATION.</p><p id="line-6" class="">&gt; AWAITING FURTHER OPERATOR INPUT...</p><p id="line-0" class=""></p><p id="line-1" class=""></p><p id="line-2" class=""></p><p id="line-3" class=""></p><p id="line-4" class=""></p><p id="line-5" class=""></p><p id="line-6" class=""><span class="terminal-cursor"></span></p></div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+
+<script>
+        // Particle Background
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initStars();
+        }
+
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < 200; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speed: Math.random() * 0.5
+                });
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffffff';
+            stars.forEach(star => {
+                ctx.globalAlpha = Math.random() * 0.5 + 0.2;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+                star.y += star.speed;
+                if (star.y > canvas.height) star.y = 0;
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        animate();
+
+        // Terminal Typing Effect
+        const terminalContent = document.getElementById('terminal-content');
+        const orders = [
+            "> INITIALIZING STRATEGIC OVERLAY...",
+            "> DATA PACKETS RECEIVED FROM SECTOR 7G.",
+            "> ALERT: VOID SIGNATURE DETECTED IN QUADRANT B.",
+            "> DIRECTIVE 01: ENGAGE PERIMETER DEFENSES.",
+            "> DIRECTIVE 02: MAINTAIN TOTAL RADIO SILENCE.",
+            "> DIRECTIVE 03: PREPARE FOR ANOMALY STABILIZATION.",
+            "> AWAITING FURTHER OPERATOR INPUT..."
+        ];
+
+        let lineIndex = 0;
+        let charIndex = 0;
+
+        function typeWriter() {
+            if (lineIndex < orders.length) {
+                if (charIndex === 0) {
+                    const line = document.createElement('p');
+                    line.id = `line-${lineIndex}`;
+                    terminalContent.appendChild(line);
+                }
+                
+                const currentLine = document.getElementById(`line-${lineIndex}`);
+                currentLine.textContent = orders[lineIndex].substring(0, charIndex) + (charIndex < orders[lineIndex].length ? "_" : "");
+                
+                if (charIndex < orders[lineIndex].length) {
+                    charIndex++;
+                    setTimeout(typeWriter, 20);
+                } else {
+                    charIndex = 0;
+                    lineIndex++;
+                    setTimeout(typeWriter, 500);
+                }
+            } else {
+                // Add permanent cursor at end
+                const cursor = document.createElement('span');
+                cursor.className = 'terminal-cursor';
+                terminalContent.lastChild.appendChild(cursor);
+            }
+        }
+
+        setTimeout(typeWriter, 1000);
+
+        // Interaction flicker effect
+        document.querySelectorAll('.glass-panel').forEach(panel => {
+            panel.addEventListener('mousedown', () => {
+                panel.style.opacity = '0.7';
+                panel.style.transform = 'scale(0.99)';
+                setTimeout(() => {
+                    panel.style.opacity = '1';
+                    panel.style.transform = 'scale(1)';
+                }, 100);
+            });
+        });
+    </script>
+
+
+
+
+<script>
+    window.addEventListener('message', (e) => {
+        if (!e.data || !e.data.video) return;
+        let video = document.querySelector('video');
+        if (!video) {
+            video = document.createElement('video');
+            video.className = 'td-video-bg';
+            video.muted = true;
+            video.autoplay = true;
+            video.loop = true;
+            video.playsInline = true;
+            video.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;object-fit:cover;opacity:.32;filter:grayscale(.7) contrast(1.25) brightness(.62);z-index:0;pointer-events:none;';
+            document.body.prepend(video);
+            document.querySelectorAll('body > :not(.td-video-bg)').forEach((el) => {
+                if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+                el.style.zIndex = el.style.zIndex || '1';
+            });
+        }
+        video.src = e.data.video;
+        video.play().catch(() => {});
+    });
+</script>
+</body></html>

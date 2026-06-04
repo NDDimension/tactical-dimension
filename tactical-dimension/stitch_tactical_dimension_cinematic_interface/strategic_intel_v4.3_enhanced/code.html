@@ -1,0 +1,363 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TACTICAL_DIMENSION_v4.2 - INTEL</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#99cbff",
+                        "surface-container-lowest": "#0e0e0e",
+                        "tertiary": "#c8c6c5",
+                        "surface": "#131313",
+                        "surface-container": "#1f1f1f",
+                        "on-surface": "#e2e2e2",
+                        "on-error": "#690005",
+                        "surface-tint": "#ffb77d",
+                        "surface-container-low": "#1b1b1b",
+                        "on-primary": "#4d2600",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "surface-variant": "#353535",
+                        "on-secondary-fixed-variant": "#004a78",
+                        "primary-fixed-dim": "#ffb77d",
+                        "on-primary-fixed-variant": "#6e3900",
+                        "on-primary-container": "#623200",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "on-surface-variant": "#ddc1ae",
+                        "background": "#131313",
+                        "outline": "#a48c7a",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "secondary-fixed": "#cfe5ff",
+                        "inverse-surface": "#e2e2e2",
+                        "surface-bright": "#393939",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#2f1500",
+                        "secondary": "#99cbff",
+                        "inverse-primary": "#904d00",
+                        "surface-container-high": "#2a2a2a",
+                        "on-tertiary": "#313030",
+                        "on-secondary-fixed": "#001d34",
+                        "primary": "#ffb77d",
+                        "on-tertiary-container": "#3f3e3e",
+                        "primary-container": "#ff8c00",
+                        "surface-dim": "#131313",
+                        "error-container": "#93000a",
+                        "inverse-on-surface": "#303030",
+                        "primary-fixed": "#ffdcc3",
+                        "tertiary-fixed": "#e5e2e1",
+                        "on-secondary-container": "#003559",
+                        "secondary-container": "#00a1fe",
+                        "surface-container-highest": "#353535",
+                        "error": "#ffb4ab",
+                        "outline-variant": "#564334",
+                        "on-background": "#e2e2e2",
+                        "on-secondary": "#003355",
+                        "tertiary-container": "#aba9a9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "unit": "4px",
+                        "margin-desktop": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-sm": ["JetBrains Mono"],
+                        "body-lg": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.05em", "fontWeight": "900" }],
+                        "data-mono": ["14px", { "lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-sm": ["13px", { "lineHeight": "1.5", "letterSpacing": "0.02em", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "800" }],
+                        "label-caps": ["11px", { "lineHeight": "1.0", "letterSpacing": "0.15em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "900" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #000000; }
+        .scanline {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+        }
+        .glow-border {
+            box-shadow: 0 0 4px rgba(153, 203, 255, 0.4), inset 0 0 2px rgba(153, 203, 255, 0.2);
+        }
+        .amber-glow {
+            box-shadow: 0 0 8px rgba(255, 183, 125, 0.5);
+        }
+        .flicker:hover { animation: flicker 0.15s infinite alternate; }
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+        .marquee { overflow: hidden; white-space: nowrap; }
+        .marquee-content { display: inline-block; animation: marquee 20s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #353535; }
+        ::-webkit-scrollbar-thumb:hover { background: #99cbff; }
+
+        /* Motion Updates */
+        @keyframes map-scan {
+            0% { top: -10%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 110%; opacity: 0; }
+        }
+        .electric-scan-line {
+            position: absolute;
+            left: 0; right: 0; height: 2px;
+            background: rgba(0, 161, 254, 0.8);
+            box-shadow: 0 0 15px rgba(0, 161, 254, 0.6), 0 0 5px rgba(0, 161, 254, 0.4);
+            animation: map-scan 4s linear infinite;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .reveal-card {
+            opacity: 0;
+            transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal-card.left { transform: translateX(-40px); }
+        .reveal-card.right { transform: translateX(40px); }
+        .reveal-card.up { transform: translateY(40px); }
+        .reveal-card.active {
+            opacity: 1;
+            transform: translate(0, 0);
+        }
+        
+        .parallax-bg {
+            transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+    </style>
+</head>
+<body class="text-on-surface font-body-lg min-h-screen relative flex flex-col md:flex-row overflow-hidden"><div class="fixed inset-0 flex items-center justify-center pointer-events-none z-[-1] overflow-hidden"><span style="font-family: 'Inter', sans-serif; font-size: 20vw; opacity: 0.04; color: white; filter: blur(4px); font-weight: 900;">03</span></div>
+<!-- TopNavBar (Mobile Only) / Top Frame -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter h-16 max-w-container-max mx-auto bg-surface/80 backdrop-blur-md md:hidden border-b border-outline-variant/30 tonal layering with 0.5px luminous borders flat with inner glow">
+<div class="font-headline-md text-headline-md font-black tracking-tighter text-primary">TACTICAL_DIMENSION_v4.2</div>
+<button class="bg-primary text-on-primary font-label-caps text-label-caps px-4 py-2 hover:bg-surface-tint transition-colors">EMERGENCY_OVERRIDE</button>
+</header>
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex flex-col fixed left-0 top-0 bottom-0 z-40 p-unit bg-surface-container/60 backdrop-blur-xl h-full w-64 border-r border-outline-variant/20 glassmorphism with scanline overlay flat no shadows">
+<div class="p-4 mb-6 border-b border-outline-variant/20">
+<div class="font-label-caps text-label-caps text-on-surface mb-1">COMMANDER_PROFILE</div>
+<div class="font-headline-md text-headline-md text-primary tracking-tighter">SECTOR 7-G</div>
+<div class="font-data-mono text-data-mono text-secondary mt-1 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> MISSION_ACTIVE</div>
+</div>
+<ul class="flex flex-col gap-2 flex-grow">
+<li><a class="flex items-center gap-3 px-4 py-3 font-body-sm text-body-sm text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-colors flicker-hover" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">location_searching</span> COORDINATES</a></li>
+<li><a class="flex items-center gap-3 px-4 py-3 font-body-sm text-body-sm text-secondary border-l-4 border-secondary bg-secondary-fixed-dim/10 hover:bg-surface-container-high transition-colors flicker-hover" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">query_stats</span> TELEMETRY</a></li>
+<li><a class="flex items-center gap-3 px-4 py-3 font-body-sm text-body-sm text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-colors flicker-hover" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">enhanced_encryption</span> ENCRYPTION</a></li>
+<li><a class="flex items-center gap-3 px-4 py-3 font-body-sm text-body-sm text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-colors flicker-hover" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">radar</span> SENSORS</a></li>
+<li><a class="flex items-center gap-3 px-4 py-3 font-body-sm text-body-sm text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-colors flicker-hover" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">satellite_alt</span> UPLINK</a></li>
+</ul>
+<button class="mt-auto mx-4 mb-4 border border-secondary text-secondary font-label-caps text-label-caps py-2 hover:bg-secondary/10 flicker transition-colors">TERMINATE_SESSION</button>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full md:ml-64 mt-16 md:mt-0 p-margin-mobile md:p-gutter max-w-container-max mx-auto h-screen overflow-y-auto scanline relative z-10 parallax-bg" data-speed="0.5" style="perspective: 1000px;">
+<!-- Header Info Bar -->
+<div class="flex justify-between items-end mb-4 border-b border-surface-variant pb-2 reveal-card up" style="transition-delay: 0.1s;">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">STRATEGIC_INTEL</h1>
+<div class="font-data-mono text-data-mono text-on-surface-variant flex gap-4 mt-2">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary text-[14px]">lock</span> ENCRYPTED_CHANNEL</span>
+<span class="flex items-center gap-1 text-secondary"><span class="w-1.5 h-1.5 bg-secondary rounded-full animate-ping"></span> LIVE_FEED</span>
+</div>
+</div>
+<div class="hidden md:flex gap-2">
+<span class="bg-surface-container border border-outline-variant px-2 py-1 font-label-caps text-label-caps text-on-surface-variant">NODE: OMEGA-3</span>
+<span class="bg-surface-container border border-outline-variant px-2 py-1 font-label-caps text-label-caps text-on-surface-variant">LATENCY: 12ms</span>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-unit h-[calc(100vh-140px)]">
+<!-- Global Map Card (Main Span) -->
+<div class="md:col-span-8 md:row-span-2 bg-surface/60 backdrop-blur-xl border border-outline-variant/30 relative flex flex-col p-4 glow-border reveal-card left transition-all duration-500 hover:brightness-110 hover:shadow-[0_0_20px_rgba(153,203,255,0.6)] hover:shadow-[inset_0_0_40px_rgba(255,140,0,0.15)]" style="transition-delay: 0.2s; transform: rotateY(-2deg);">
+<div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-secondary"></div>
+<div class="absolute top-0 right-0 w-4 h-4 border-t border-r border-secondary"></div>
+<div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-secondary"></div>
+<div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-secondary"></div>
+<div class="flex justify-between items-center mb-4 border-b border-surface-variant pb-2">
+<span class="font-label-caps text-label-caps text-secondary">GLOBAL_THREAT_MAP</span>
+<span class="font-data-mono text-data-mono text-on-surface-variant text-[10px]">SCALAR_RESOLUTION_MAX</span>
+</div>
+<div class="flex-1 relative bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMwZTBlMGUiLz48cGF0aCBkPSJNMCA1MCBRIDIwIDYwIDUwIDUwIFQgMTAwIDUwIiBzdHJva2U9IiMwMDRhNzgiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==')] bg-cover bg-center rounded overflow-hidden group parallax-bg" data-speed="-1">
+<div class="absolute inset-0 bg-secondary/5 mix-blend-screen"></div>
+<div class="electric-scan-line"></div>
+<!-- Mock Map Points -->
+<div class="absolute top-[30%] left-[40%] w-2 h-2 bg-primary rounded-full shadow-[0_0_10px_#ffb77d] animate-pulse">
+<div class="absolute top-3 left-3 bg-surface border border-primary px-1 py-0.5 font-label-caps text-[8px] text-primary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">TARGET_A1</div>
+</div>
+<div class="absolute top-[60%] left-[70%] w-1.5 h-1.5 bg-secondary rounded-full shadow-[0_0_8px_#99cbff]"></div>
+<div class="absolute top-[20%] left-[80%] w-3 h-3 bg-error rounded-full shadow-[0_0_15px_#ffb4ab] animate-ping"></div>
+</div>
+</div>
+<!-- Telemetry Stream -->
+<div class="md:col-span-4 md:row-span-1 bg-surface-container-low/80 border-t border-secondary p-4 relative flex flex-col reveal-card right transition-all duration-500 hover:brightness-110 hover:shadow-[0_0_16px_rgba(153,203,255,0.6)] hover:shadow-[inset_0_0_40px_rgba(255,140,0,0.15)]" style="transition-delay: 0.3s; transform: rotateY(2deg);">
+<div class="font-label-caps text-label-caps text-on-surface mb-2 flex items-center justify-between">
+<span>RAW_TELEMETRY</span>
+<span class="material-symbols-outlined text-[14px]">graphic_eq</span>
+</div><div class="w-full h-1 bg-surface-container-highest mb-3 overflow-hidden"><div class="h-full bg-primary transition-all duration-1000 ease-out" style="width: 75%;"></div></div>
+<div class="flex-1 overflow-y-auto space-y-1 font-data-mono text-[11px] text-on-surface-variant" id="telemetry-logs">
+<div class="flex gap-2 border-b border-surface-variant pb-1">
+<span class="text-tertiary">001</span>
+<span class="text-secondary">SYS.INIT</span>
+<span class="type-target">[OK] Handshake confirmed.</span>
+</div>
+<div class="flex gap-2 border-b border-surface-variant pb-1">
+<span class="text-tertiary">002</span>
+<span class="text-secondary">UPLINK</span>
+<span class="type-target">Establishing sec_layer_4...</span>
+</div>
+<div class="flex gap-2 border-b border-surface-variant pb-1 text-error">
+<span class="text-tertiary">003</span>
+<span>WARN</span>
+<span class="type-target">Anomaly detected in Sector G.</span>
+</div>
+<div class="flex gap-2 border-b border-surface-variant pb-1">
+<span class="text-tertiary">004</span>
+<span class="text-secondary">DATA</span>
+<span class="type-target">Routing packets via proxy node.</span>
+</div>
+<div class="flex gap-2 border-b border-surface-variant pb-1">
+<span class="text-tertiary">005</span>
+<span class="text-secondary">SCAN</span>
+<span class="type-target">Passive radar sweep complete.</span>
+</div>
+</div>
+</div>
+<!-- Heatmap / Sensors -->
+<div class="md:col-span-4 md:row-span-1 bg-surface-container/60 backdrop-blur-md border border-outline-variant/30 p-4 relative flex flex-col reveal-card right transition-all duration-500 hover:brightness-110 hover:shadow-[0_0_16px_rgba(153,203,255,0.6)] hover:shadow-[inset_0_0_40px_rgba(255,140,0,0.15)]" style="transition-delay: 0.4s; transform: rotateY(1deg);">
+<div class="font-label-caps text-label-caps text-on-surface mb-2 border-b border-surface-variant pb-2">THERMAL_IMAGING_GRID</div><div class="w-full h-1 bg-surface-container-highest mb-3 overflow-hidden"><div class="h-full bg-primary transition-all duration-1000 ease-out" style="width: 42%;"></div></div>
+<div class="flex-1 grid grid-cols-4 grid-rows-3 gap-1">
+<div class="bg-surface-variant transition-all duration-500 hover:brightness-110 hover:shadow-[0_0_20px_rgba(153,203,255,0.6)] hover:shadow-[inset_0_0_40px_rgba(255,140,0,0.15)]" style="transition-delay: 0.2s; transform: rotateY(-2deg);"></div><div class="bg-surface-variant transition-all duration-500 hover:brightness-110 hover:shadow-[0_0_16px_rgba(153,203,255,0.6)] hover:shadow-[inset_0_0_40px_rgba(255,140,0,0.15)]" style="transition-delay: 0.3s; transform: rotateY(2deg);"></div><div class="bg-primary/20 transition-all duration-500 hover:brightness-110 hover:shadow-[0_0_16px_rgba(153,203,255,0.6)] hover:shadow-[inset_0_0_40px_rgba(255,140,0,0.15)]" style="transition-delay: 0.4s; transform: rotateY(1deg);"></div><div class="bg-primary/40 amber-glow border border-primary"></div>
+<div class="bg-surface-variant"></div><div class="bg-surface-variant"></div><div class="bg-primary/10"></div><div class="bg-primary/20"></div>
+<div class="bg-surface-variant"></div><div class="bg-surface-variant"></div><div class="bg-surface-variant"></div><div class="bg-surface-variant"></div>
+</div>
+<div class="mt-2 font-data-mono text-[10px] text-on-tertiary-fixed-variant text-right">SCAN_RATE: 0.5s</div>
+</div>
+<!-- Bottom Status Scroller -->
+<div class="md:col-span-12 h-8 bg-surface-container-lowest border-y border-outline-variant/20 flex items-center px-2 marquee font-data-mono text-[11px] text-secondary reveal-card up" style="transition-delay: 0.5s;">
+<div class="marquee-content gap-8 flex">
+<span>&gt; ALERT: Unauthorized access attempt blocked at firewall beta.</span>
+<span>&gt; STATUS: All systems nominal in sector alpha.</span>
+<span>&gt; COMM: Encrypted channel open with command core.</span>
+<span>&gt; LOGISTICS: Resupply drone ETA 14:00 Zulu.</span>
+</div>
+</div>
+</div>
+<div class="absolute top-gutter right-gutter w-[120px] h-[80px] bg-surface-container-lowest/90 border border-outline-variant/30 p-2 z-20 hidden md:block"><div class="w-full h-full border border-dashed border-secondary/40 relative"><div class="absolute top-1 left-1 w-4 h-4 border border-dotted border-secondary"></div><div class="absolute bottom-2 right-2 w-8 h-4 border border-dotted border-secondary"></div><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-8 border border-dotted border-secondary"></div></div><div class="absolute -top-2 -left-2 font-label-caps text-[8px] text-secondary bg-surface px-1">SCHEMATIC_V1</div></div></main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-between items-center px-gutter py-2 border-t border-outline-variant/10 opacity-60 bg-surface-container-lowest md:hidden tonal layering flat">
+<a class="text-on-tertiary-fixed-variant flex flex-col items-center" href="#"><span class="material-symbols-outlined text-[20px]">location_searching</span></a>
+<a class="text-primary flex flex-col items-center border-b-2 border-primary pb-1 shadow-[0_0_8px_rgba(255,183,125,0.5)]" href="#"><span class="material-symbols-outlined text-[20px]">query_stats</span></a>
+<a class="text-on-tertiary-fixed-variant flex flex-col items-center" href="#"><span class="material-symbols-outlined text-[20px]">enhanced_encryption</span></a>
+<a class="text-on-tertiary-fixed-variant flex flex-col items-center" href="#"><span class="material-symbols-outlined text-[20px]">radar</span></a>
+</nav>
+<!-- Global Footer (Desktop) -->
+<footer class="hidden md:flex fixed bottom-0 left-0 w-full z-30 justify-between items-center px-gutter py-1 border-t border-outline-variant/10 bg-surface-container-lowest/80 backdrop-blur-sm">
+<div class="font-data-mono text-[10px] text-on-tertiary-fixed-variant">SYSTEM_STAMP_2024_CORE_OS</div>
+<div class="flex gap-4 font-label-caps text-[10px] text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">PRIVACY_PROTOCOL</a>
+<a class="hover:text-primary transition-colors" href="#">SIGNAL_MAP</a>
+</div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Typing effect for telemetry
+        const typeTargets = document.querySelectorAll('.type-target');
+        typeTargets.forEach((el, index) => {
+            const originalText = el.textContent;
+            el.textContent = '';
+            setTimeout(() => {
+                let charIndex = 0;
+                const typeInterval = setInterval(() => {
+                    if (charIndex < originalText.length) {
+                        el.textContent += originalText.charAt(charIndex);
+                        charIndex++;
+                    } else {
+                        clearInterval(typeInterval);
+                    }
+                }, 30 + Math.random() * 50);
+            }, 800 + (index * 600) + Math.random() * 300);
+        });
+
+        // Intersection Observer for scroll reveal
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Mouse Parallax effect
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            
+            document.querySelectorAll('.parallax-bg').forEach(el => {
+                const speed = parseFloat(el.getAttribute('data-speed')) || 1;
+                el.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
+        });
+    });
+</script>
+<div class="fixed left-0 top-1/2 -translate-y-1/2 -translate-x-[40%] rotate-[-90deg] z-50 pointer-events-none hidden md:block"><span class="font-headline-md text-primary tracking-[0.4em] opacity-60 whitespace-nowrap" style="font-family: 'Inter', sans-serif; font-weight: 900;">SELECT LOADOUT</span></div>
+<script>
+    window.addEventListener('message', (e) => {
+        if (!e.data || !e.data.video) return;
+        let video = document.querySelector('video');
+        if (!video) {
+            video = document.createElement('video');
+            video.className = 'td-video-bg';
+            video.muted = true;
+            video.autoplay = true;
+            video.loop = true;
+            video.playsInline = true;
+            video.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;object-fit:cover;opacity:.32;filter:grayscale(.7) contrast(1.25) brightness(.62);z-index:0;pointer-events:none;';
+            document.body.prepend(video);
+            document.querySelectorAll('body > :not(.td-video-bg)').forEach((el) => {
+                if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+                el.style.zIndex = el.style.zIndex || '1';
+            });
+        }
+        video.src = e.data.video;
+        video.play().catch(() => {});
+    });
+</script>
+</body></html>

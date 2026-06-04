@@ -1,0 +1,479 @@
+<!DOCTYPE html><html class="dark" lang="en" style="width: 1280px; height: 1024px; overflow: hidden; position: relative;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>THE VOID - TACTICAL DIMENSION v4.2</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#99cbff",
+                        "surface-container-lowest": "#0e0e0e",
+                        "tertiary": "#c8c6c5",
+                        "surface": "#131313",
+                        "surface-container": "#1f1f1f",
+                        "on-surface": "#e2e2e2",
+                        "on-error": "#690005",
+                        "surface-tint": "#ffb77d",
+                        "surface-container-low": "#1b1b1b",
+                        "on-primary": "#4d2600",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "surface-variant": "#353535",
+                        "on-secondary-fixed-variant": "#004a78",
+                        "primary-fixed-dim": "#ffb77d",
+                        "on-primary-fixed-variant": "#6e3900",
+                        "on-primary-container": "#623200",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "on-surface-variant": "#ddc1ae",
+                        "background": "#131313",
+                        "outline": "#a48c7a",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "secondary-fixed": "#cfe5ff",
+                        "inverse-surface": "#e2e2e2",
+                        "surface-bright": "#393939",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#2f1500",
+                        "secondary": "#99cbff",
+                        "inverse-primary": "#904d00",
+                        "surface-container-high": "#2a2a2a",
+                        "on-tertiary": "#313030",
+                        "on-secondary-fixed": "#001d34",
+                        "primary": "#ffb77d",
+                        "on-tertiary-container": "#3f3e3e",
+                        "primary-container": "#ff8c00",
+                        "surface-dim": "#131313",
+                        "error-container": "#93000a",
+                        "inverse-on-surface": "#303030",
+                        "primary-fixed": "#ffdcc3",
+                        "tertiary-fixed": "#e5e2e1",
+                        "on-secondary-container": "#003559",
+                        "secondary-container": "#00a1fe",
+                        "surface-container-highest": "#353535",
+                        "error": "#ffb4ab",
+                        "outline-variant": "#564334",
+                        "on-background": "#e2e2e2",
+                        "on-secondary": "#003355",
+                        "tertiary-container": "#aba9a9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "unit": "4px",
+                        "margin-desktop": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-sm": ["JetBrains Mono"],
+                        "body-lg": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.05em", "fontWeight": "900" }],
+                        "data-mono": ["14px", { "lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-sm": ["13px", { "lineHeight": "1.5", "letterSpacing": "0.02em", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "800" }],
+                        "label-caps": ["11px", { "lineHeight": "1.0", "letterSpacing": "0.15em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "900" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: #000000;
+            color: #e2e2e2;
+            overflow-x: hidden;
+            /* Allow vertical scrolling for smooth nav if needed, but keeping primarily full viewport height */
+            overflow-y: auto; 
+        }
+        
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
+        .flicker-hover:hover {
+            animation: textFlicker 0.15s infinite alternate;
+        }
+
+        @keyframes textFlicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; text-shadow: 0 0 8px rgba(0, 161, 254, 0.8); }
+        }
+
+        .code-scroll {
+            animation: scrollUp 20s linear infinite;
+        }
+
+        @keyframes scrollUp {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(-100%); }
+        }
+
+        .orb-pulse {
+            animation: pulseOrb 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseOrb {
+            0% { transform: scale(0.95); box-shadow: 0 0 40px rgba(0, 161, 254, 0.4), inset 0 0 60px rgba(0, 161, 254, 0.2); }
+            100% { transform: scale(1.05); box-shadow: 0 0 80px rgba(0, 161, 254, 0.8), inset 0 0 100px rgba(0, 161, 254, 0.5); }
+        }
+        
+        .glitch-effect {
+            position: relative;
+        }
+        .glitch-effect::before, .glitch-effect::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+        .glitch-effect::before {
+            left: 2px;
+            text-shadow: -2px 0 red;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        .glitch-effect::after {
+            left: -2px;
+            text-shadow: -2px 0 blue;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(22px, 9999px, 83px, 0); }
+            20% { clip: rect(69px, 9999px, 12px, 0); }
+            40% { clip: rect(86px, 9999px, 98px, 0); }
+            60% { clip: rect(24px, 9999px, 10px, 0); }
+            80% { clip: rect(6px, 9999px, 54px, 0); }
+            100% { clip: rect(78px, 9999px, 20px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            20% { clip: rect(10px, 9999px, 44px, 0); }
+            40% { clip: rect(20px, 9999px, 88px, 0); }
+            60% { clip: rect(70px, 9999px, 30px, 0); }
+            80% { clip: rect(40px, 9999px, 60px, 0); }
+            100% { clip: rect(90px, 9999px, 10px, 0); }
+        }
+
+        /* Zoom-in reveal animation */
+        .zoom-reveal {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .zoom-reveal.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Heavy Button Glitch Effect */
+        .glitch-btn-hover:hover {
+            animation: btn-glitch 0.2s infinite;
+            position: relative;
+        }
+        .glitch-btn-hover:hover::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -2px; right: 2px; bottom: 0;
+            background: rgba(255, 0, 0, 0.3);
+            mix-blend-mode: hard-light;
+            animation: btn-glitch-anim 0.3s infinite linear alternate-reverse;
+            z-index: 20;
+            pointer-events: none;
+        }
+        .glitch-btn-hover:hover::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 2px; right: -2px; bottom: 0;
+            background: rgba(0, 161, 254, 0.3);
+            mix-blend-mode: hard-light;
+            animation: btn-glitch-anim-2 0.2s infinite linear alternate-reverse;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        @keyframes btn-glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 1px); }
+            40% { transform: translate(-1px, -1px); }
+            60% { transform: translate(2px, 1px); }
+            80% { transform: translate(1px, -1px); }
+            100% { transform: translate(0); }
+        }
+        @keyframes btn-glitch-anim {
+            0% { clip-path: inset(10% 0 80% 0); }
+            20% { clip-path: inset(80% 0 10% 0); }
+            40% { clip-path: inset(40% 0 40% 0); }
+            60% { clip-path: inset(20% 0 60% 0); }
+            80% { clip-path: inset(70% 0 20% 0); }
+            100% { clip-path: inset(30% 0 50% 0); }
+        }
+        @keyframes btn-glitch-anim-2 {
+            0% { clip-path: inset(20% 0 60% 0); }
+            20% { clip-path: inset(60% 0 20% 0); }
+            40% { clip-path: inset(10% 0 80% 0); }
+            60% { clip-path: inset(80% 0 10% 0); }
+            80% { clip-path: inset(30% 0 50% 0); }
+            100% { clip-path: inset(50% 0 30% 0); }
+        }
+
+    </style>
+</head>
+<body class="bg-[#000000] text-on-surface antialiased min-h-screen flex flex-col relative">
+<div class="scanline"></div>
+<!-- Canvas for Electric Cobalt Particles -->
+<canvas class="fixed inset-0 pointer-events-none z-0" id="void-particles" width="1280" height="1024"></canvas>
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter h-16 max-w-container-max mx-auto bg-surface/80 backdrop-blur-md border-b border-outline-variant/30">
+<div class="font-headline-md text-headline-md font-black tracking-tighter text-primary">
+            TACTICAL_DIMENSION_v4.2
+        </div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-on-surface-variant font-data-mono hover:text-primary hover:bg-surface-variant/20 transition-all duration-150 px-2 py-1" href="#strategy">STRATEGY</a>
+<a class="text-on-surface-variant font-data-mono hover:text-primary hover:bg-surface-variant/20 transition-all duration-150 px-2 py-1" href="#intel">INTEL</a>
+<a class="text-on-surface-variant font-data-mono hover:text-primary hover:bg-surface-variant/20 transition-all duration-150 px-2 py-1" href="#logistics">LOGISTICS</a>
+<a class="text-on-surface-variant font-data-mono hover:text-primary hover:bg-surface-variant/20 transition-all duration-150 px-2 py-1" href="#comms">COMMS</a>
+<a class="text-primary border-b-2 border-primary pb-1 shadow-[0_0_8px_rgba(255,183,125,0.5)] font-data-mono px-2" href="#void">VOID</a>
+</div>
+<button class="font-data-mono text-data-mono text-on-surface border border-primary text-primary px-4 py-2 hover:bg-surface-variant/20 transition-all duration-150 scale-95 duration-75">
+            EMERGENCY_OVERRIDE
+        </button>
+</nav>
+<!-- SideNavBar (Desktop Only) -->
+
+<!-- Main Content Area -->
+<main class="flex-grow flex items-center justify-center relative mt-16 pb-12 overflow-hidden min-h-[calc(100vh-64px)]" id="void">
+<!-- Background Code Scrollers -->
+<div class="absolute inset-0 flex justify-between px-8 opacity-20 pointer-events-none z-0">
+<div class="w-1/4 h-full overflow-hidden font-data-mono text-[10px] text-secondary leading-tight code-scroll" style="animation-duration: 25s;">
+                // KERNEL PANIC: CORE BREACH DETECTED<br>
+                0x0000001A: MEMORY_MANAGEMENT<br>
+                INITIATING DUMP TO PHYSICAL MEMORY...<br>
+                PHYSICAL MEMORY DUMP COMPLETE.<br>
+                CONTACTING SYSTEM ADMINISTRATOR...<br>
+                ERROR: NO RESPONSE FROM HOST.<br>
+                ROUTING THROUGH PROXY 7A...<br>
+                PROXY 7A: CONNECTION REFUSED.<br>
+                // ATTEMPTING MANUAL OVERRIDE<br>
+                SYS.REQ(FORCE_SHUTDOWN)<br>
+                &gt; ACCESS DENIED.<br>
+                &gt; REQUIRED PRIVILEGE: ROOT_PRIME<br>
+                // SCANNING FOR VULNERABILITIES<br>
+                PORT 21: FILTERED<br>
+                PORT 22: OPEN (SSH - PROTOCOL 2.0)<br>
+                PORT 80: CLOSED<br>
+                PORT 443: OPEN (HTTPS)<br>
+                // EXPLOIT PAYLOAD INJECTED<br>
+                AWAITING CALLBACK...<br>
+                CALLBACK RECEIVED. SHELL SPAWNED.<br>
+                WHOAMI: SYSTEM<br>
+</div>
+<div class="w-1/4 h-full overflow-hidden font-data-mono text-[10px] text-primary leading-tight code-scroll" style="animation-duration: 18s; animation-direction: reverse;">
+                &gt; INITIALIZING VOID SEQUENCE...<br>
+                &gt; PARSING DIMENSIONAL ARRAY...<br>
+                [===================&gt;] 98%<br>
+                &gt; CRITICAL ERROR IN SECTOR 4.<br>
+                &gt; BYPASSING SAFETY PROTOCOLS...<br>
+                &gt; WARNING: STRUCTURAL INTEGRITY COMPROMISED.<br>
+                &gt; CORE TEMPERATURE: 4500K<br>
+                &gt; CONTAINMENT FIELD STRENGTH: 12%<br>
+                &gt; IMMEDIATE EVACUATION RECOMMENDED.<br>
+                // OVERRIDE ACCEPTED.<br>
+                &gt; ENGAGING ANTIMATTER CONTAINMENT...<br>
+                &gt; ANTIMATTER CONTAINMENT FAILED.<br>
+                &gt; INITIATING PURGE SEQUENCE...<br>
+                &gt; 3... 2... 1...<br>
+                &gt; PURGE COMPLETE.<br>
+                &gt; SYSTEM OFFLINE.
+            </div>
+</div>
+<!-- Central Void Element -->
+<div class="relative z-10 flex flex-col items-center justify-center zoom-reveal visible mx-auto" id="core-element">
+<!-- Brackets -->
+<div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-outline-variant/50"></div>
+<div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-outline-variant/50"></div>
+<div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-outline-variant/50"></div>
+<div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-outline-variant/50"></div>
+<div class="p-12 relative flex flex-col items-center">
+<!-- The Orb -->
+<div class="w-64 h-64 md:w-96 md:h-96 rounded-full bg-[#000000] border-2 border-secondary-container orb-pulse relative flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-secondary/20 via-transparent to-transparent"></div>
+<div class="absolute inset-0 border-[4px] border-secondary border-dashed rounded-full opacity-30 animate-[spin_20s_linear_infinite]"></div>
+<div class="absolute inset-4 border-[2px] border-secondary/50 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+<span class="material-symbols-outlined text-6xl text-secondary z-20 glitch-effect" data-text="warning" style="font-variation-settings: &quot;FILL&quot; 1;">
+                        warning
+                    </span>
+<div class="absolute bottom-10 font-data-mono text-label-caps text-secondary text-center z-20">
+                        CORE_STATUS: UNSTABLE<br>
+                        ENTROPY: 99.9%
+                    </div>
+</div>
+<h1 class="mt-12 font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface glitch-effect" data-text="THE_VOID">
+                    THE_VOID
+                </h1>
+<p class="mt-4 font-body-sm text-body-sm text-on-surface-variant max-w-md text-center">
+                    ALL SYSTEMS NOMINAL. DIMENSIONAL ANCHORS RELEASED. YOU HAVE REACHED THE END OF THE TETHER.
+                </p>
+<div class="mt-12">
+<button class="bg-primary text-on-primary font-label-caps text-label-caps px-8 py-4 flex items-center gap-2 hover:bg-primary-fixed transition-colors border-2 border-primary-container relative group overflow-hidden glitch-btn-hover">
+<span class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></span>
+<span class="material-symbols-outlined text-lg">power_settings_new</span>
+<span class="relative z-10">TERMINATE SESSION</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="fixed bottom-0 left-0 w-full z-50 flex justify-between items-center px-gutter py-2 border-t border-outline-variant/10 opacity-60 bg-surface-container-lowest">
+<div class="font-data-mono text-data-mono text-primary">
+            SYSTEM_STAMP_2024_CORE_OS
+        </div>
+<div class="flex gap-4">
+<a class="font-label-caps text-label-caps text-on-tertiary-fixed-variant hover:text-on-surface transition-colors" href="#">PRIVACY_PROTOCOL</a>
+<a class="font-label-caps text-label-caps text-on-tertiary-fixed-variant hover:text-on-surface transition-colors" href="#">SIGNAL_MAP</a>
+<a class="font-label-caps text-label-caps text-primary hover:text-on-surface transition-colors" href="#">VOID_LINK</a>
+</div>
+</footer>
+<script>
+        // Particle System for Electric Cobalt Void Effect
+        const canvas = document.getElementById('void-particles');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles;
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset(true);
+            }
+            reset(initial = false) {
+                if (initial) {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                } else {
+                    // Spawn near edges
+                    if (Math.random() > 0.5) {
+                        this.x = Math.random() > 0.5 ? -10 : width + 10;
+                        this.y = Math.random() * height;
+                    } else {
+                        this.x = Math.random() * width;
+                        this.y = Math.random() > 0.5 ? -10 : height + 10;
+                    }
+                }
+                this.vx = 0;
+                this.vy = 0;
+                this.size = Math.random() * 2 + 1;
+                this.color = '#00a1fe'; // Electric Cobalt (secondary-container)
+                this.alpha = Math.random() * 0.6 + 0.2;
+                this.speed = Math.random() * 0.02 + 0.01;
+            }
+            update() {
+                // Target center of screen
+                const targetX = width / 2;
+                const targetY = height / 2;
+                const dx = targetX - this.x;
+                const dy = targetY - this.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                
+                // Accelerate towards center
+                this.vx += (dx / dist) * this.speed;
+                this.vy += (dy / dist) * this.speed;
+                
+                // Add friction/drag
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+                
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Reset if close to center
+                if (dist < 40) {
+                    this.reset();
+                }
+            }
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        particles = Array.from({ length: 150 }, () => new Particle());
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Zoom-in reveal on scroll using IntersectionObserver
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Optional: stop observing once revealed
+                    // observer.unobserve(entry.target); 
+                }
+            });
+        }, { threshold: 0.1 });
+
+        const coreElement = document.getElementById('core-element');
+        if (coreElement) {
+            observer.observe(coreElement);
+            // If already near top, force visible
+            setTimeout(() => {
+                coreElement.classList.add('visible');
+            }, 100);
+        }
+    </script>
+
+
+
+
+<div id="snapdom-sandbox" data-snapdom-sandbox="true" aria-hidden="true" style="position: absolute; left: -9999px; top: -9999px; width: 0px; height: 0px; overflow: hidden;"></div></body></html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TACTICAL DIMENSION // DIAGNOSTICS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Space+Mono:wght@400;700&amp;family=Bebas+Neue&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        :root {
+            --scanline-color: rgba(255, 183, 125, 0.05);
+        }
+        body {
+            background-color: #000000;
+            overflow: hidden;
+            color: #e2e2e2;
+        }
+        .scanline-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, var(--scanline-color) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.5;
+        }
+        .grid-perspective {
+            position: fixed;
+            bottom: -20%;
+            left: -10%;
+            right: -10%;
+            height: 60%;
+            background-image: 
+                linear-gradient(to right, rgba(153, 203, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(153, 203, 255, 0.05) 1px, transparent 1px);
+            background-size: 80px 80px;
+            transform: perspective(500px) rotateX(60deg);
+            z-index: -1;
+        }
+        .corner-bracket {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-color: #ffb77d;
+            border-style: solid;
+            pointer-events: none;
+        }
+        .bracket-tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+        .bracket-tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+        .bracket-bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+        .bracket-br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+        .bebas { font-family: 'Bebas Neue', sans-serif; }
+        .space-mono { font-family: 'Space Mono', monospace; }
+        
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; text-shadow: 0 0 8px #4ade80; }
+            50% { opacity: 0.5; text-shadow: 0 0 2px #4ade80; }
+        }
+        .status-nominal { color: #4ade80; animation: pulse-green 2s infinite; }
+        
+        @keyframes flicker-amber {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% { opacity: 1; }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% { opacity: 0.4; }
+        }
+        .status-stabilizing { color: #ffb77d; animation: flicker-amber 3s infinite; }
+
+        .watermark-04 {
+            position: fixed;
+            bottom: 50px;
+            right: 50px;
+            font-size: 24rem;
+            line-height: 1;
+            font-weight: 900;
+            color: rgba(255, 183, 125, 0.03);
+            pointer-events: none;
+            z-index: -2;
+            user-select: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-background": "#e2e2e2",
+                      "primary": "#ffb77d",
+                      "surface-container-low": "#1b1b1b",
+                      "surface-bright": "#393939",
+                      "secondary-fixed-dim": "#99cbff",
+                      "on-primary-container": "#623200",
+                      "tertiary-fixed": "#e5e2e1",
+                      "tertiary-fixed-dim": "#c8c6c5",
+                      "inverse-on-surface": "#303030",
+                      "secondary-container": "#00a1fe",
+                      "on-primary": "#4d2600",
+                      "outline": "#a48c7a",
+                      "on-error-container": "#ffdad6",
+                      "on-primary-fixed-variant": "#6e3900",
+                      "on-surface": "#e2e2e2",
+                      "on-primary-fixed": "#2f1500",
+                      "on-error": "#690005",
+                      "surface-tint": "#ffb77d",
+                      "on-tertiary-fixed-variant": "#474746",
+                      "primary-fixed-dim": "#ffb77d",
+                      "error": "#ffb4ab",
+                      "on-surface-variant": "#ddc1ae",
+                      "inverse-surface": "#e2e2e2",
+                      "on-tertiary-fixed": "#1c1b1b",
+                      "surface-container-highest": "#353535",
+                      "on-secondary-fixed": "#001d34",
+                      "error-container": "#93000a",
+                      "on-secondary-fixed-variant": "#004a78",
+                      "outline-variant": "#564334",
+                      "on-secondary-container": "#003559",
+                      "secondary-fixed": "#cfe5ff",
+                      "inverse-primary": "#904d00",
+                      "tertiary": "#c8c6c5",
+                      "on-secondary": "#003355",
+                      "surface-container-lowest": "#0e0e0e",
+                      "on-tertiary-container": "#3f3e3e",
+                      "surface": "#131313",
+                      "surface-container-high": "#2a2a2a",
+                      "primary-fixed": "#ffdcc3",
+                      "primary-container": "#ff8c00",
+                      "surface-container": "#1f1f1f",
+                      "background": "#131313",
+                      "surface-variant": "#353535",
+                      "tertiary-container": "#aba9a9",
+                      "on-tertiary": "#313030",
+                      "secondary": "#99cbff",
+                      "surface-dim": "#131313"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "margin-mobile": "16px",
+                      "container-max": "1440px",
+                      "margin-desktop": "48px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["JetBrains Mono"],
+                      "body-sm": ["JetBrains Mono"],
+                      "headline-md": ["Inter"],
+                      "label-caps": ["JetBrains Mono"],
+                      "data-mono": ["JetBrains Mono"],
+                      "headline-lg-mobile": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.05em", "fontWeight": "900"}],
+                      "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                      "body-sm": ["13px", {"lineHeight": "1.5", "letterSpacing": "0.02em", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "800"}],
+                      "label-caps": ["11px", {"lineHeight": "1.0", "letterSpacing": "0.15em", "fontWeight": "700"}],
+                      "data-mono": ["14px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["32px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "900"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-black font-body-sm text-on-surface selection:bg-primary selection:text-black">
+<div class="scanline-overlay"></div>
+<div class="grid-perspective"></div>
+<div class="watermark-04 bebas">04</div>
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full bg-background/80 backdrop-blur-xl border-b border-outline-variant z-50 flex justify-between items-center px-margin-desktop h-16 max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md text-primary tracking-tighter uppercase bebas">TACTICAL DIMENSION</div>
+<div class="hidden md:flex items-center gap-gutter">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors cursor-crosshair" href="#">STRATEGY</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors cursor-crosshair" href="#">INTEL</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors cursor-crosshair" href="#">LOGISTICS</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors cursor-crosshair" href="#">COMMS</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors cursor-crosshair" href="#">VOID</a>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95">notifications</span>
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95">settings</span>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-surface-container-lowest/90 backdrop-blur-md border-r border-outline-variant z-40 flex flex-col py-6">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary/20 border border-primary/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">person</span>
+</div>
+<div>
+<div class="font-data-mono text-primary text-[12px] tracking-widest uppercase">ALPHA_UNIT</div>
+<div class="text-[10px] text-primary/60 font-data-mono">STATUS: ENCRYPTED</div>
+</div>
+</div>
+</div>
+<div class="flex-1 space-y-1">
+<a class="flex items-center gap-4 text-on-surface-variant px-6 py-3 hover:bg-surface-variant/50 hover:tracking-widest transition-all duration-300 font-data-mono" href="#">
+<span class="material-symbols-outlined">location_searching</span> COORDINATES
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant px-6 py-3 hover:bg-surface-variant/50 hover:tracking-widest transition-all duration-300 font-data-mono" href="#">
+<span class="material-symbols-outlined">monitor_heart</span> TELEMETRY
+            </a>
+<!-- Diagnostics Active State -->
+<a class="flex items-center gap-4 bg-secondary/10 text-secondary border-l-4 border-secondary px-6 py-3 font-data-mono tracking-widest" href="#">
+<span class="material-symbols-outlined">analytics</span> DIAGNOSTICS
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant px-6 py-3 hover:bg-surface-variant/50 hover:tracking-widest transition-all duration-300 font-data-mono" href="#">
+<span class="material-symbols-outlined">lock</span> ENCRYPTION
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant px-6 py-3 hover:bg-surface-variant/50 hover:tracking-widest transition-all duration-300 font-data-mono" href="#">
+<span class="material-symbols-outlined">radar</span> SENSORS
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant px-6 py-3 hover:bg-surface-variant/50 hover:tracking-widest transition-all duration-300 font-data-mono" href="#">
+<span class="material-symbols-outlined">settings_input_antenna</span> UPLINK
+            </a>
+</div>
+<div class="px-6 mt-auto">
+<button class="w-full bg-primary text-black font-data-mono text-label-caps py-3 uppercase tracking-tighter active:scale-95 transition-transform">INITIATE_SCAN</button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="pl-64 pt-16 h-screen flex flex-col overflow-hidden">
+<div class="flex-1 p-margin-desktop grid grid-cols-12 gap-gutter overflow-hidden">
+<!-- Left Panel: SYSTEM_HARDWARE_INTEGRITY -->
+<section class="col-span-3 h-full flex flex-col gap-4">
+<div class="relative bg-surface-container-low/60 border border-outline-variant p-4 backdrop-blur-md flex-1">
+<div class="bracket-tl corner-bracket"></div>
+<div class="bracket-tr corner-bracket"></div>
+<div class="bracket-bl corner-bracket"></div>
+<div class="bracket-br corner-bracket"></div>
+<h2 class="bebas text-headline-md text-primary mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined">memory</span>
+                        SYSTEM_HARDWARE</h2>
+<div class="space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<span class="font-data-mono text-on-surface-variant text-[12px]">CORE_PROCESSOR [0x1A]</span>
+<span class="status-nominal font-data-mono text-[11px]">NOMINAL</span>
+</div>
+<div class="w-full h-1 bg-surface-bright/30">
+<div class="h-full bg-green-400 w-[92%]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<span class="font-data-mono text-on-surface-variant text-[12px]">QUANTUM_STABILIZER</span>
+<span class="status-stabilizing font-data-mono text-[11px]">STABILIZING</span>
+</div>
+<div class="w-full h-1 bg-surface-bright/30 overflow-hidden">
+<div class="h-full bg-primary w-[45%] animate-[pulse_1s_infinite]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<span class="font-data-mono text-on-surface-variant text-[12px]">DIMENSION_ANCHORS</span>
+<span class="status-nominal font-data-mono text-[11px]">NOMINAL</span>
+</div>
+<div class="w-full h-1 bg-surface-bright/30">
+<div class="h-full bg-green-400 w-[100%]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<span class="font-data-mono text-on-surface-variant text-[12px]">NEURAL_INTERFACE</span>
+<span class="status-nominal font-data-mono text-[11px]">NOMINAL</span>
+</div>
+<div class="w-full h-1 bg-surface-bright/30">
+<div class="h-full bg-green-400 w-[88%]"></div>
+</div>
+</div>
+<div class="mt-8 p-3 border border-outline-variant bg-black/40">
+<div class="text-[10px] font-data-mono text-secondary-fixed-dim uppercase mb-1">Temperature</div>
+<div class="text-2xl bebas text-secondary-fixed-dim">34.2°C</div>
+<div class="mt-2 flex gap-1">
+<div class="h-4 w-1 bg-secondary"></div>
+<div class="h-4 w-1 bg-secondary"></div>
+<div class="h-4 w-1 bg-secondary"></div>
+<div class="h-4 w-1 bg-secondary/30"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Center Panel: MEMORY_ALLOCATION_MAP -->
+<section class="col-span-6 h-full">
+<div class="relative bg-surface-container-low/40 border border-outline-variant p-6 backdrop-blur-md h-full flex flex-col">
+<div class="bracket-tl corner-bracket"></div>
+<div class="bracket-tr corner-bracket"></div>
+<div class="bracket-bl corner-bracket"></div>
+<div class="bracket-br corner-bracket"></div>
+<div class="flex justify-between items-center mb-6">
+<h2 class="bebas text-headline-md text-primary">MEMORY_ALLOCATION_MAP&nbsp;&nbsp;</h2>
+<div class="font-data-mono text-[10px] text-on-surface-variant">SECTOR_SIZE: 1024KB // RADIX: 16</div>
+</div>
+<div class="flex-1 grid grid-cols-12 grid-rows-10 gap-2 border border-outline-variant p-4 bg-black/40" id="memory-grid">
+<!-- Dynamic Grid Injected via JS -->
+<div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(255, 183, 125); box-shadow: rgb(255, 183, 125) 0px 0px 8px;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(255, 183, 125); box-shadow: rgb(255, 183, 125) 0px 0px 8px;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(255, 183, 125); box-shadow: rgb(255, 183, 125) 0px 0px 8px;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(255, 183, 125); box-shadow: rgb(255, 183, 125) 0px 0px 8px;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(255, 183, 125); box-shadow: rgb(255, 183, 125) 0px 0px 8px;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(255, 183, 125); box-shadow: rgb(255, 183, 125) 0px 0px 8px;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(255, 183, 125); box-shadow: rgb(255, 183, 125) 0px 0px 8px;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(255, 183, 125); box-shadow: rgb(255, 183, 125) 0px 0px 8px;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(255, 183, 125); box-shadow: rgb(255, 183, 125) 0px 0px 8px;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgb(153, 203, 255); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div><div class="w-full h-full border border-white/5 transition-all duration-500" style="background-color: rgba(57, 57, 57, 0.3); box-shadow: none;"></div></div>
+<div class="mt-4 flex justify-between items-center font-data-mono text-[10px] text-on-surface-variant uppercase">
+<div class="flex gap-4">
+<span class="flex items-center gap-1"><span class="w-2 h-2 bg-surface-bright"></span> EMPTY</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 bg-secondary"></span> ACTIVE</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 bg-primary"></span> CRITICAL</span>
+</div>
+<div class="">LOAD: 42.8%</div>
+</div>
+</div>
+</section>
+<!-- Right Panel: ERROR_LOG_DAEMON -->
+<section class="col-span-3 h-full flex flex-col">
+<div class="relative bg-surface-container-low/60 border border-outline-variant backdrop-blur-md h-full flex flex-col">
+<div class="bracket-tl corner-bracket"></div>
+<div class="bracket-tr corner-bracket"></div>
+<div class="bracket-bl corner-bracket"></div>
+<div class="bracket-br corner-bracket"></div>
+<div class="p-4 border-b border-outline-variant">
+<h2 class="bebas text-headline-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">terminal</span>
+                            ERROR_LOG_DAEMON
+                        </h2>
+</div>
+<div class="flex-1 p-4 overflow-y-auto space-y-1 space-mono text-[10px] text-secondary/80 bg-black/60" id="log-terminal"><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:47]</span> <span class="text-secondary">SCANNING: QUANTUM_FLUX_DENSITY - 0.982</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:47]</span> <span class="text-secondary">RETRYING: Connection sequence...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:47]</span> <span class="text-secondary">SUCCESS: VOID_DIMENSION_LINK established</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:47]</span> <span class="text-secondary">RETRYING: Connection sequence...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:47]</span> <span class="text-error">ERROR: Buffer overflow at address 0xFF02</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:47]</span> <span class="text-secondary">RETRYING: Connection sequence...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:47]</span> <span class="text-secondary">DEBUG: Garbage collection in Progress</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:49]</span> <span class="text-secondary">LOG: Operator ALPHA_UNIT authenticated</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:50]</span> <span class="text-secondary">SUCCESS: VOID_DIMENSION_LINK established</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:51]</span> <span class="text-secondary">INIT_KERNEL_VOICE_MODULE...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:52]</span> <span class="text-secondary">SUCCESS: VOID_DIMENSION_LINK established</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:53]</span> <span class="text-secondary">MSG: Encryption key rotated successfully</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:55]</span> <span class="text-secondary">DEBUG: Garbage collection in Progress</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:56]</span> <span class="text-secondary">ALERT: Substrate depth exceeding limits</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:57]</span> <span class="text-secondary">MSG: Encryption key rotated successfully</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:58]</span> <span class="text-error">ERROR: Buffer overflow at address 0xFF02</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[10:59:59]</span> <span class="text-secondary">INIT_KERNEL_VOICE_MODULE...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:01]</span> <span class="text-secondary">RETRYING: Connection sequence...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:02]</span> <span class="text-error">ERROR: Buffer overflow at address 0xFF02</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:03]</span> <span class="text-secondary">INIT_KERNEL_VOICE_MODULE...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:04]</span> <span class="text-secondary">INIT_KERNEL_VOICE_MODULE...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:05]</span> <span class="text-secondary">STATUS: Dimensions locked at 4D_XYZT</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:07]</span> <span class="text-secondary">ALERT: Substrate depth exceeding limits</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:08]</span> <span class="text-secondary">SUCCESS: VOID_DIMENSION_LINK established</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:09]</span> <span class="text-secondary">DEBUG: Garbage collection in Progress</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:10]</span> <span class="text-error">ERROR: Buffer overflow at address 0xFF02</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:11]</span> <span class="text-secondary">RETRYING: Connection sequence...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:13]</span> <span class="text-secondary">ALERT: Substrate depth exceeding limits</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:14]</span> <span class="text-secondary">MSG: Encryption key rotated successfully</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:15]</span> <span class="text-secondary">RETRYING: Connection sequence...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:16]</span> <span class="text-secondary">DEBUG: Garbage collection in Progress</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:17]</span> <span class="text-secondary">STATUS: Dimensions locked at 4D_XYZT</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:19]</span> <span class="text-secondary">SCANNING: QUANTUM_FLUX_DENSITY - 0.982</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:20]</span> <span class="text-primary">WARN: Lattice fluctuations in Sector 4</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:21]</span> <span class="text-secondary">RETRYING: Connection sequence...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:22]</span> <span class="text-secondary">INIT_KERNEL_VOICE_MODULE...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:23]</span> <span class="text-error">ERROR: Buffer overflow at address 0xFF02</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:25]</span> <span class="text-primary">WARN: Lattice fluctuations in Sector 4</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:26]</span> <span class="text-secondary">SCANNING: QUANTUM_FLUX_DENSITY - 0.982</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:27]</span> <span class="text-secondary">MSG: Encryption key rotated successfully</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:28]</span> <span class="text-secondary">STATUS: Dimensions locked at 4D_XYZT</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:29]</span> <span class="text-secondary">RETRYING: Connection sequence...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:31]</span> <span class="text-secondary">SUCCESS: VOID_DIMENSION_LINK established</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:32]</span> <span class="text-secondary">LOG: Operator ALPHA_UNIT authenticated</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:34]</span> <span class="text-primary">WARN: Lattice fluctuations in Sector 4</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:35]</span> <span class="text-secondary">INIT_KERNEL_VOICE_MODULE...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:37]</span> <span class="text-secondary">INIT_KERNEL_VOICE_MODULE...</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:38]</span> <span class="text-error">ERROR: Buffer overflow at address 0xFF02</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:00:39]</span> <span class="text-error">ERROR: Buffer overflow at address 0xFF02</span></div><div class="flex gap-2 border-l border-white/10 pl-2"><span class="opacity-40">[11:49:41]</span> <span class="text-secondary">DEBUG: Garbage collection in Progress</span></div></div>
+<div class="p-4 border-t border-outline-variant bg-surface-container-low">
+<div class="flex items-center gap-2 text-primary">
+<span class="bebas text-[12px] uppercase">Command:</span>
+<div class="flex-1 bg-black border border-outline-variant px-2 py-1 text-[11px] font-data-mono">
+<span class="opacity-50">_</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="fixed bottom-0 w-full bg-background/95 border-t border-outline-variant z-50 flex justify-between items-center px-margin-desktop py-2">
+<div class="font-label-caps text-label-caps text-primary uppercase">SYSTEM_PROTOCOL_v4.2 // SECTOR_VOID</div>
+<div class="flex gap-margin-desktop">
+<a class="font-body-sm text-body-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors opacity-80 hover:opacity-100 uppercase" href="#">ENCRYPTION_KEY</a>
+<a class="font-body-sm text-body-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors opacity-80 hover:opacity-100 uppercase" href="#">SECURITY_LOGS</a>
+<a class="font-body-sm text-body-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors opacity-80 hover:opacity-100 uppercase" href="#">HARDWARE_ID</a>
+</div>
+</footer>
+<script>
+        // Generate Memory Grid
+        const gridContainer = document.getElementById('memory-grid');
+        const gridCount = 120; // 12x10
+        const cells = [];
+
+        for (let i = 0; i < gridCount; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'w-full h-full border border-white/5 transition-all duration-500';
+            cell.style.backgroundColor = 'rgba(57, 57, 57, 0.3)'; // Default surface-bright
+            gridContainer.appendChild(cell);
+            cells.push(cell);
+        }
+
+        function updateGrid() {
+            cells.forEach(cell => {
+                const rand = Math.random();
+                if (rand > 0.95) {
+                    cell.style.backgroundColor = '#ffb77d'; // Amber
+                    cell.style.boxShadow = '0 0 8px #ffb77d';
+                } else if (rand > 0.7) {
+                    cell.style.backgroundColor = '#99cbff'; // Cobalt
+                    cell.style.boxShadow = 'none';
+                } else {
+                    cell.style.backgroundColor = 'rgba(57, 57, 57, 0.3)';
+                    cell.style.boxShadow = 'none';
+                }
+            });
+        }
+        setInterval(updateGrid, 2000);
+        updateGrid();
+
+        // Generate Terminal Logs
+        const logContainer = document.getElementById('log-terminal');
+        const logMessages = [
+            "INIT_KERNEL_VOICE_MODULE...",
+            "SUCCESS: VOID_DIMENSION_LINK established",
+            "WARN: Lattice fluctuations in Sector 4",
+            "SCANNING: QUANTUM_FLUX_DENSITY - 0.982",
+            "ERROR: Buffer overflow at address 0xFF02",
+            "RETRYING: Connection sequence...",
+            "LOG: Operator ALPHA_UNIT authenticated",
+            "ALERT: Substrate depth exceeding limits",
+            "STATUS: Dimensions locked at 4D_XYZT",
+            "DEBUG: Garbage collection in Progress",
+            "MSG: Encryption key rotated successfully"
+        ];
+
+        function addLog() {
+            const time = new Date().toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const msg = logMessages[Math.floor(Math.random() * logMessages.length)];
+            const div = document.createElement('div');
+            div.className = 'flex gap-2 border-l border-white/10 pl-2';
+            div.innerHTML = `<span class="opacity-40">[${time}]</span> <span class="${msg.includes('ERROR') ? 'text-error' : msg.includes('WARN') ? 'text-primary' : 'text-secondary'}">${msg}</span>`;
+            logContainer.appendChild(div);
+            
+            if (logContainer.childNodes.length > 50) {
+                logContainer.removeChild(logContainer.firstChild);
+            }
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        setInterval(addLog, 1200);
+        for(let i=0; i<15; i++) addLog();
+    </script>
+
+
+</body></html>
